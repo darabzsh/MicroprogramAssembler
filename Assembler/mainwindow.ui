@@ -584,7 +584,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton">
+           <widget class="QPushButton" name="MicroButton">
             <property name="minimumSize">
              <size>
               <width>111</width>
@@ -595,7 +595,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
             <property name="text">
-             <string>PushButton</string>
+             <string>MicroProgram</string>
             </property>
            </widget>
           </item>
@@ -613,7 +613,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_2">
+           <widget class="QPushButton" name="MainButton">
             <property name="minimumSize">
              <size>
               <width>111</width>
@@ -624,7 +624,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
             <property name="text">
-             <string>PushButton</string>
+             <string>MainProgram</string>
             </property>
            </widget>
           </item>
@@ -642,7 +642,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_3">
+           <widget class="QPushButton" name="Compile">
             <property name="minimumSize">
              <size>
               <width>111</width>
@@ -653,7 +653,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
             <property name="text">
-             <string>PushButton</string>
+             <string>Compile</string>
             </property>
            </widget>
           </item>
@@ -671,7 +671,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_4">
+           <widget class="QPushButton" name="Exit">
             <property name="minimumSize">
              <size>
               <width>111</width>
@@ -682,7 +682,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
             <property name="text">
-             <string>PushButton</string>
+             <string>Exit</string>
             </property>
            </widget>
           </item>
@@ -1681,7 +1681,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
      <x>0</x>
      <y>0</y>
      <width>1291</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

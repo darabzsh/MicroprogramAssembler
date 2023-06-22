@@ -16,6 +16,9 @@ public:
     void run_micro();
     ~MainWindow();
 
+private slots:
+    void on_MicroButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

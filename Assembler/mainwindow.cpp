@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+<<<<<<< HEAD
 #include "QMap"
 QMap <QString, QString> F1,F2,F3;
 QString f1 = "-",
@@ -18,6 +19,13 @@ QString f1 = "-",
     i = "-",
     e = "-",
     opcode = "-";
+=======
+#include <QDebug>
+#include <QMessageBox>
+
+
+
+>>>>>>> 75c98a219363391d76face9db5850e4eabc4b35e
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -77,6 +85,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->Microprogram_Memory->resizeColumnsToContents();
     ui->Main_Memory->resizeRowsToContents();
     ui->Main_Memory->resizeColumnsToContents();
+<<<<<<< HEAD
     //    ui->Main_Memory-
 }
 
@@ -98,6 +107,10 @@ void MainWindow::set_regs()
     if (i != "-") ui->F1->setText(i);
     if (e != "-") ui->F1->setText(e);
     if (opcode != "-") ui->F1->setText(opcode);
+=======
+//    ui->Main_Memory-
+
+>>>>>>> 75c98a219363391d76face9db5850e4eabc4b35e
 }
 
 MainWindow::~MainWindow()
@@ -106,3 +119,60 @@ MainWindow::~MainWindow()
 }
 
 
+<<<<<<< HEAD
+=======
+void MainWindow::on_MicroButton_clicked()
+{
+    QString micro = ui->microprogram->toPlainText();
+    QStringList lines = micro.split("\n",Qt::SkipEmptyParts);
+    QList<QStringList> wordList;
+
+    foreach (const QString& line, lines) {
+        QStringList lineWords = line.split(" ", Qt::SkipEmptyParts);
+        wordList.append(lineWords);
+    }
+//    wordList.removeAll([](const QStringList& list) {
+//        return list.isEmpty();
+//    });
+
+    //Conditions
+
+    int count_end = 0;
+    foreach (const QStringList& words, wordList) {
+        count_end += words.count("END");
+    }
+    if(count_end != 1){
+        QMessageBox::critical(nullptr, "Error", "MicroProgram just need one <END>...");
+        return ;
+    }
+    // --------
+    int currentline = 0;
+
+//    qDebug() << wordList[0][1] ;
+
+    ui->microprogram->clear();
+    QStringList newline;
+    foreach (const QStringList& words, wordList) {
+        QString line = words.join(" ");
+        newline.append(line);
+    }
+
+    ui->microprogram->append(newline.join("\n"));
+
+    foreach (const QStringList& words, wordList) {
+        if (words.at(0) == "END")
+            break;
+        if (words.at(0) == "ORG")
+            currentline = words.at(1).toInt();
+        if (words.at(0).endsWith(":")){
+            qDebug() << words.at(0) ;
+            QString text = words.at(0);
+            text = text.chopped(1);
+            ui->Microprogram_Memory->setItem(currentline-1,2,new QTableWidgetItem(text));
+        }
+        currentline ++;
+    }
+
+}
+
+>>>>>>> 75c98a219363391d76face9db5850e4eabc4b35e
