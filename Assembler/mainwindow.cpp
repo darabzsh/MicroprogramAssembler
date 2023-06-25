@@ -1,8 +1,10 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
-<<<<<<< HEAD
 #include "QMap"
+#include <QDebug>
+#include <QMessageBox>
 QMap <QString, QString> F1,F2,F3;
+
 QString f1 = "-",
     f2 = "-",
     f3 = "-",
@@ -19,13 +21,9 @@ QString f1 = "-",
     i = "-",
     e = "-",
     opcode = "-";
-=======
-#include <QDebug>
-#include <QMessageBox>
 
 
 
->>>>>>> 75c98a219363391d76face9db5850e4eabc4b35e
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -85,7 +83,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->Microprogram_Memory->resizeColumnsToContents();
     ui->Main_Memory->resizeRowsToContents();
     ui->Main_Memory->resizeColumnsToContents();
-<<<<<<< HEAD
     //    ui->Main_Memory-
 }
 
@@ -107,10 +104,8 @@ void MainWindow::set_regs()
     if (i != "-") ui->F1->setText(i);
     if (e != "-") ui->F1->setText(e);
     if (opcode != "-") ui->F1->setText(opcode);
-=======
 //    ui->Main_Memory-
 
->>>>>>> 75c98a219363391d76face9db5850e4eabc4b35e
 }
 
 MainWindow::~MainWindow()
@@ -119,8 +114,6 @@ MainWindow::~MainWindow()
 }
 
 
-<<<<<<< HEAD
-=======
 void MainWindow::on_MicroButton_clicked()
 {
     QString micro = ui->microprogram->toPlainText();
@@ -175,4 +168,3 @@ void MainWindow::on_MicroButton_clicked()
 
 }
 
->>>>>>> 75c98a219363391d76face9db5850e4eabc4b35e
