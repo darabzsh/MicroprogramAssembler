@@ -59,6 +59,7 @@ MainWindow::MainWindow(QWidget *parent)
     F3["INCPC"] = "101";
     F3["ARTPC"] = "110";
     F3[""] = "RESERVED";
+
     for (int var = 0; var < 128; ++var) {
         ui->Microprogram_Memory->insertRow(var);
         ui->Microprogram_Memory->verticalHeader()->setVisible(false);
@@ -104,9 +105,86 @@ void MainWindow::set_regs()
     if (i != "-") ui->F1->setText(i);
     if (e != "-") ui->F1->setText(e);
     if (opcode != "-") ui->F1->setText(opcode);
-//    ui->Main_Memory-
+}
+
+void MainWindow::run_micro(QString instruction)
+{
+    QString AC_tmp = ui->AC->text();
+    QString AR_tmp = ui->AR->text();
+    QString PC_tmp = ui->PC->text();
+    QString DR_tmp = ui->DR->text();
+    QString E_tmp = ui->E->text();
+
+    // For F1
+    if (ui->F1->text()=="001"){
+
+    }
+
 
 }
+
+//QString MainWindow::toBinary(int dec)
+//{
+//    if (dec > 0){
+//        return CompleteBits(QString::number(dec, 2), 16);
+//    }
+//    else{
+//        QString PosBinary = QString::number(-dec+1, 2);
+//        for (int i = 0 ; i < PosBinary.length() ; i++){
+//            if (PosBinary[i]=='1')
+//                PosBinary[i] = '0';
+//            else
+//                PosBinary[i] = '1';
+//        }
+//    }
+//    return
+//}
+
+
+QString MainWindow::toHex(const QString& hexString)
+{
+    QString binaryString;
+    bool ok;
+    quint64 decimalValue = hexString.toULongLong(&ok, 16);
+
+    if (ok) {
+        binaryString = QString::number(decimalValue, 2);
+        binaryString = binaryString.rightJustified(hexString.length() * 4, '0');
+    } else {
+        // Invalid hexadecimal string
+        binaryString = "Invalid";
+    }
+    return binaryString;
+}
+
+
+
+
+QString MainWindow::CompleteBits(QString bits, int Length)
+{
+    int bitsLength = bits.length();
+    for (int i = 0; i < Length - bitsLength; i++)
+        bits.prepend('0');
+    return bits;
+}
+
+
+QString MainWindow::toBinary(const QString &Hex)
+{
+    QString hexString;
+    bool ok;
+    quint64 decimalValue = Hex.toULongLong(&ok, 2);
+
+    if (ok) {
+        hexString = QString::number(decimalValue, 16);
+        hexString = hexString.toUpper();
+    } else {
+        // Invalid binary string
+        hexString = "Invalid";
+    }
+    return hexString; // 4 length hex returns 16 bits binary
+}
+
 
 MainWindow::~MainWindow()
 {
