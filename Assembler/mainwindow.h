@@ -13,7 +13,12 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     void set_regs();
-    void run_micro();
+    void run_micro(QString instruction);
+    QString toBinary(const QString& Hex);
+//    QString toBinary(int dec);
+    QString toHex(const QString& hexString);
+    QString CompleteBits(QString bits, int Length);
+
     ~MainWindow();
 
 private slots:
