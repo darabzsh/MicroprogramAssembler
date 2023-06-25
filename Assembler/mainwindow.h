@@ -18,6 +18,8 @@ public:
 
 private slots:
     void on_MicroButton_clicked();
+    void Fill_Micro_Table(QList<QStringList> wordList);
+    void Clear_Micro();
 
 private:
     Ui::MainWindow *ui;

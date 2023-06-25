@@ -104,7 +104,6 @@ void MainWindow::set_regs()
     if (i != "-") ui->F1->setText(i);
     if (e != "-") ui->F1->setText(e);
     if (opcode != "-") ui->F1->setText(opcode);
-//    ui->Main_Memory-
 
 }
 
@@ -113,6 +112,58 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
+void MainWindow::Fill_Micro_Table(QList<QStringList> wordList)
+{
+    int currentline = 0;
+    ui->microprogram->clear();
+    Clear_Micro();
+    QStringList newline;
+    foreach (const QStringList& words, wordList) {
+        QString line = words.join(" ");
+        newline.append(line);
+    }
+
+    ui->microprogram->append(newline.join("\n"));
+    QMap <QString, int> Labels;
+    Labels.clear();
+    foreach (const QStringList& words, wordList) {
+        if (words.at(0) == "END")
+            break;
+        if (words.at(0) == "ORG")
+            currentline = words.at(1).toInt();
+        if (words.at(0).endsWith(":")){
+            qDebug() << words.at(0) ;
+            QString text = words.at(0);
+            text = text.chopped(1);
+            ui->Microprogram_Memory->setItem(currentline-1,2,new QTableWidgetItem(text));
+            Labels[words.at(0).left(words.at(0).size() - 1)] = currentline;
+        }
+
+
+
+
+
+
+        currentline ++;
+    }
+}
+
+void MainWindow::Clear_Micro()
+{
+    int startColumn = 2;
+    int endColumn = 4;
+
+    int rowCount = ui->Microprogram_Memory->rowCount();
+    for (int row = 0; row < rowCount; ++row) {
+        for (int column = startColumn; column <= endColumn; ++column) {
+            QTableWidgetItem* item = ui->Microprogram_Memory->item(row, column);
+            if (item) {
+                item->setText("");
+            }
+        }
+    }
+}
 
 void MainWindow::on_MicroButton_clicked()
 {
@@ -124,6 +175,7 @@ void MainWindow::on_MicroButton_clicked()
         QStringList lineWords = line.split(" ", Qt::SkipEmptyParts);
         wordList.append(lineWords);
     }
+
 //    wordList.removeAll([](const QStringList& list) {
 //        return list.isEmpty();
 //    });
@@ -138,33 +190,43 @@ void MainWindow::on_MicroButton_clicked()
         QMessageBox::critical(nullptr, "Error", "MicroProgram just need one <END>...");
         return ;
     }
-    // --------
-    int currentline = 0;
+
 
 //    qDebug() << wordList[0][1] ;
 
-    ui->microprogram->clear();
-    QStringList newline;
-    foreach (const QStringList& words, wordList) {
-        QString line = words.join(" ");
-        newline.append(line);
-    }
 
-    ui->microprogram->append(newline.join("\n"));
 
-    foreach (const QStringList& words, wordList) {
-        if (words.at(0) == "END")
-            break;
-        if (words.at(0) == "ORG")
-            currentline = words.at(1).toInt();
-        if (words.at(0).endsWith(":")){
-            qDebug() << words.at(0) ;
-            QString text = words.at(0);
-            text = text.chopped(1);
-            ui->Microprogram_Memory->setItem(currentline-1,2,new QTableWidgetItem(text));
+    for(int i = 0 ; i< wordList.length();i++)
+    {
+        QStringList cf1 = {} , cf2= {} , cf3 = {};
+        for(int j = 0 ; j< wordList[i].length();j++)
+        {
+            if(wordList[i][j].endsWith(":"))
+                continue;
+            if(F1.contains(wordList[i][j]))
+                cf1.append(wordList[i][j]);
+            else if(F2.contains(wordList[i][j]))
+                cf2.append(wordList[i][j]);
+            else if(F3.contains(wordList[i][j]))
+                cf3.append(wordList[i][j]);
+            QString message = "%1 has %2 , %3 both ...";
+            if(cf1.length()>=2)
+            {
+                QMessageBox::critical(nullptr, "Error", message.arg("F1").arg(cf1[0]).arg(cf1[1]));
+                return ;
+            }
+            if(cf2.length()>=2)
+            {
+                QMessageBox::critical(nullptr, "Error", message.arg("F2").arg(cf2[0]).arg(cf2[1]));
+                return ;
+            }
+            if(cf3.length()>=2)
+            {
+                QMessageBox::critical(nullptr, "Error", message.arg("F2").arg(cf3[0]).arg(cf3[1]));
+                return ;
+            }
         }
-        currentline ++;
     }
-
+    Fill_Micro_Table(wordList);
 }
 
