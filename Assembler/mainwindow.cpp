@@ -29,10 +29,6 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-//    qDebug() << toBinary(100);
-//    qDebug() << toHex(toBinary(-13242));
-    qDebug() << SumWithCarry("10000000000000000", "10000000000000000", true);
     // For F1
     F1["NOP"] = "000";
     F1["ADD"] = "001";
@@ -131,9 +127,55 @@ void MainWindow::run_micro(QString instruction)
     QString E_tmp = ui->E->text();
 
     // For F1
-    if (ui->F1->text()=="001"){
+    if (ui->F1->text()=="001")
+        ui->AC->setText(SumWithCarry(CompleteBits(AC_tmp), CompleteBits(DR_tmp), true));
 
-    }
+    else if (ui->F1->text() == "010")
+        ui->AC->setText("0");
+    else if (ui->F1->text()=="011")
+        ui->AC->setText(SumWithCarry(CompleteBits(AC_tmp), CompleteBits("01")));
+    else if(ui->F1->text()=="100")
+        ui->AC->setText(DR_tmp);
+//    else if(ui->F1->text()=="101")
+
+    else if(ui->F1->text()=="110")
+        ui->AR->setText(PC_tmp);
+//    else if(ui->F1->text()=="111")
+
+
+    // For F2
+    if (ui->F2->text()=="001")
+        ui->AC->setText(SumWithCarry(CompleteBits(AC_tmp), TwoComplement((CompleteBits(DR_tmp)))));
+    else if(ui->F2->text()=="010")
+        ui->AC->setText(OR(AC_tmp, DR_tmp));
+    else if(ui->F2->text()=="011")
+        ui->AC->setText(AND(AC_tmp, DR_tmp));
+//    else if(ui->F2->text()=="100")
+
+    else if(ui->F2->text()=="101")
+        ui->DR->setText(AC_tmp);
+    else if(ui->F2->text()=="110")
+        ui->DR->setText(SumWithCarry(DR_tmp, CompleteBits("01")));
+//    else if(ui->F2->text()=="111")
+
+
+    // For F3
+    if (ui->F3->text()=="001")
+        ui->AC->setText(XOR(AC_tmp, DR_tmp));
+    else if (ui->F3->text()=="010")
+        ui->AC->setText(OneComplement(AC_tmp));
+    else if (ui->F3->text()=="011")
+        ui->AC->setText(ShiftToLeft(AC_tmp));
+    else if (ui->F3->text()=="100")
+        ui->AC->setText(ShiftToRight(AC_tmp));
+    else if (ui->F3->text()=="101")
+        ui->PC->setText(SumWithCarry(PC_tmp, CompleteBits("01")));
+    else if (ui->F3->text()=="110")
+        ui->PC->setText(AR_tmp);
+//    else if (ui->F3->text()=="111")  // RESERVED
+
+
+
 
 
 }
@@ -176,7 +218,7 @@ QString MainWindow::toHex(const QString& binary, int length)
 
 
 
-QString MainWindow::CompleteBits(QString bits, int Length = 16)
+QString MainWindow::CompleteBits(QString bits, int Length)
 {
     int bitsLength = bits.length();
     bool neg = false;
@@ -192,7 +234,7 @@ QString MainWindow::CompleteBits(QString bits, int Length = 16)
     return bits;
 }
 
-QString MainWindow::TwoComplement(QString Binary)
+QString MainWindow::OneComplement(QString Binary)
 {
     for (int i = 0 ; i < Binary.length(); i++){
         if (Binary[i] == '1')
@@ -200,6 +242,12 @@ QString MainWindow::TwoComplement(QString Binary)
         else
             Binary[i] = '1';
     }
+    return Binary;
+}
+
+QString MainWindow::TwoComplement(QString Binary)
+{
+    Binary = OneComplement(Binary);
     Binary = SumWithCarry(CompleteBits(Binary), CompleteBits("01"));
     return Binary;
 }
@@ -279,7 +327,40 @@ QString MainWindow::binaryToHex(QString binary)
     return hex;
 }
 
+QString MainWindow::OR(QString binary1, QString binary2)
+{
+    QString result = "";
+    for (int i = 0 ; i < binary1.length(); ++i)
+        result.append(QString::number(binary1[i].digitValue() | binary2[i].digitValue()));
+    return result;
+}
 
+QString MainWindow::AND(QString binary1, QString binary2)
+{
+    QString result = "";
+    for (int i = 0 ; i < binary1.length(); ++i)
+        result.append(QString::number(binary1[i].digitValue() & binary2[i].digitValue()));
+    return result;
+}
+
+QString MainWindow::XOR(QString binary1, QString binary2)
+{
+    return OR(AND(binary1, OneComplement(binary2)), AND(OneComplement(binary1), binary2));
+}
+
+QString MainWindow::ShiftToLeft(QString binary)
+{
+    QString result = binary.mid(1) + ui->E->text();
+    ui->E->setText(binary[0]);
+    return result;
+}
+
+QString MainWindow::ShiftToRight(QString binary)
+{
+    QString result = ui->E->text() + binary.left(binary.length()-1);
+    ui->E->setText(binary.at(binary.length() - 1));
+    return result;
+}
 
 
 void MainWindow::Fill_Micro_Table(QList<QStringList> wordList)
