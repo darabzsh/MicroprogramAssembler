@@ -29,6 +29,10 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+//    qDebug() << toBinary(100);
+//    qDebug() << toHex(toBinary(-13242));
+    qDebug() << SumWithCarry("10000000000000000", "10000000000000000", true);
     // For F1
     F1["NOP"] = "000";
     F1["ADD"] = "001";
@@ -137,19 +141,19 @@ void MainWindow::run_micro(QString instruction)
 QString MainWindow::toBinary(int dec)
 {
     QString NormalBinary;
-    int number = dec;
-    while (dec > 0) {
-        int remainder = dec % 2;
+    int number = qAbs(dec);
+    while (number > 0) {
+        int remainder = number % 2;
         NormalBinary.prepend(QString::number(remainder));
-        dec /= 2;
+        number /= 2;
     }
-    if (number > 0){
-        NormalBinary.prepend("0");
-        NormalBinary = CompleteBits(NormalBinary, 16);
-    }
-    else{
 
-    }
+    NormalBinary.prepend("0");
+    NormalBinary = CompleteBits(NormalBinary, 16);
+    if (dec < 0)
+        NormalBinary = TwoComplement(NormalBinary);
+
+    return NormalBinary;
 }
 
 
@@ -213,8 +217,11 @@ QString MainWindow::SumWithCarry(const QString &binaryNumber1, const QString &bi
         sum.prepend(QString::number(currentSum % 2));
         carry = QString::number(currentSum / 2);
     }
-    if (mode)
+    if (mode){
         ui->E->setText(carry);
+        qDebug() << carry;
+    }
+
 
     return sum;
 }
