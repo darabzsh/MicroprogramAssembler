@@ -14,15 +14,19 @@ public:
     MainWindow(QWidget *parent = nullptr);
     void set_regs();
     void run_micro(QString instruction);
-    QString toBinary(const QString& Hex);
-//    QString toBinary(int dec);
-    QString toHex(const QString& hexString);
-    QString CompleteBits(QString bits, int Length);
+    QString toBinary(QString Hex);          // 4 character hex returns 16 bits binary, 5 returns 20
+    QString toBinary(int dec);              // Returns 16 bits
+    QString toHex(const QString& binary, int length = 16);
+    QString CompleteBits(QString bits, int Length);     // Add the first character (len - binary_len) times at the first string
+    QString TwoComplement(QString Binary);              // Inputs should be 16 bits
+    QString SumWithCarry(const QString& binaryNumber1, const QString& binaryNumber2, bool mode = false);
 
     ~MainWindow();
 
 private slots:
     void on_MicroButton_clicked();
+    void Fill_Micro_Table(QList<QStringList> wordList);
+    void Clear_Micro();
 
 private:
     Ui::MainWindow *ui;
