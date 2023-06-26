@@ -30,6 +30,16 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+//    qDebug() << toHex(CompleteBits("00111", 16));
+//    qDebug() << toHex(CompleteBits("10111", 16));
+
+//    qDebug() << toBinary("011");
+//    qDebug() << toHex(CompleteBits("1001", 16));
+//    qDebug() << CompleteBits("FA0", 4);
+//    qDebug() << CompleteBits("AFA2", 4);
+//    qDebug() << toBinary(1634);
+    qDebug() << TwoComplement("0110110");
+//    qDebug() << binarySumWithCarry(CompleteBits("01011", 16), CompleteBits("0011", 16));
     // For F1
     F1["NOP"] = "000";
     F1["ADD"] = "001";
@@ -123,54 +133,95 @@ void MainWindow::run_micro(QString instruction)
 
 }
 
-//QString MainWindow::toBinary(int dec)
-//{
-//    if (dec > 0){
-//        return CompleteBits(QString::number(dec, 2), 16);
-//    }
-//    else{
-//        QString PosBinary = QString::number(-dec+1, 2);
-//        for (int i = 0 ; i < PosBinary.length() ; i++){
-//            if (PosBinary[i]=='1')
-//                PosBinary[i] = '0';
-//            else
-//                PosBinary[i] = '1';
-//        }
-//    }
-//    return
-//}
-
-
-QString MainWindow::toHex(const QString& hexString)
+QString MainWindow::toBinary(int dec)
 {
-    QString binaryString;
+    QString NormalBinary;
+    int number = dec;
+    while (dec > 0) {
+        int remainder = dec % 2;
+        NormalBinary.prepend(QString::number(remainder));
+        dec /= 2;
+    }
+    if (number > 0){
+        NormalBinary.prepend("0");
+        NormalBinary = CompleteBits(NormalBinary, 16);
+    }
+    else{
+
+    }
+}
+
+
+QString MainWindow::toHex(const QString& binary, int length)
+{
+    QString hexString;
     bool ok;
-    quint64 decimalValue = hexString.toULongLong(&ok, 16);
+    quint64 decimalValue = binary.toULongLong(&ok, 2);
 
     if (ok) {
-        binaryString = QString::number(decimalValue, 2);
-        binaryString = binaryString.rightJustified(hexString.length() * 4, '0');
+        hexString = QString::number(decimalValue, length);
+        hexString = hexString.toUpper();
     } else {
-        // Invalid hexadecimal string
-        binaryString = "Invalid";
+        // Invalid binary string
+        hexString = "Invalid";
     }
-    return binaryString;
+
+    return hexString;
 }
 
 
 
-
-QString MainWindow::CompleteBits(QString bits, int Length)
+QString MainWindow::CompleteBits(QString bits, int Length = 16)
 {
     int bitsLength = bits.length();
-    for (int i = 0; i < Length - bitsLength; i++)
-        bits.prepend('0');
+    bool neg = false;
+    QString adder = "0";
+    if (bits[0]=='1')
+        adder = "1";
+    else if (bits[0] == 'F')
+        adder = "F";
+
+    for (int i = 0; i < Length - bitsLength; i++){
+        bits.prepend(adder);
+    }
     return bits;
 }
 
-
-QString MainWindow::toBinary(const QString &Hex)
+QString MainWindow::TwoComplement(QString Binary)
 {
+    for (int i = 0 ; i < Binary.length(); i++){
+        if (Binary[i] == '1')
+            Binary[i] = '0';
+        else
+            Binary[i] = '1';
+    }
+    Binary = SumWithCarry(CompleteBits(Binary), CompleteBits("01"));
+    return Binary;
+}
+
+QString MainWindow::SumWithCarry(const QString &binaryNumber1, const QString &binaryNumber2, bool mode)
+{
+    QString sum;
+    QString carry = "0";
+
+    for (int i = 15; i >= 0; --i) {
+        int bit1 = binaryNumber1.at(i).digitValue();
+        int bit2 = binaryNumber2.at(i).digitValue();
+        int currentSum = bit1 + bit2 + carry.toInt();
+
+        sum.prepend(QString::number(currentSum % 2));
+        carry = QString::number(currentSum / 2);
+    }
+    if (mode)
+        ui->E->setText(carry);
+
+    return sum;
+}
+
+
+QString MainWindow::toBinary(QString Hex)
+{
+    Hex = CompleteBits(Hex, 4);
     QString hexString;
     bool ok;
     quint64 decimalValue = Hex.toULongLong(&ok, 2);
