@@ -3,7 +3,7 @@
 #include "QMap"
 #include <QDebug>
 #include <QMessageBox>
-QMap <QString, QString> F1,F2,F3;
+QMap <QString, QString> F1,F2,F3,CD,BR;
 
 QString f1 = "-",
     f2 = "-",
@@ -59,6 +59,18 @@ MainWindow::MainWindow(QWidget *parent)
     F3["INCPC"] = "101";
     F3["ARTPC"] = "110";
     F3[""] = "RESERVED";
+
+    //For CD
+    CD["U"] = "00";
+    CD["I"] = "01";
+    CD["S"] = "10";
+    CD["Z"] = "11";
+
+    //For BR
+    BR["JMP"] = "00";
+    BR["CALL"] = "01";
+    BR["RET"] = "10";
+    BR["MAP"] = "11";
 
     for (int var = 0; var < 128; ++var) {
         ui->Microprogram_Memory->insertRow(var);
@@ -141,20 +153,14 @@ void MainWindow::run_micro(QString instruction)
 //}
 
 
-QString MainWindow::toHex(const QString& hexString)
-{
-    QString binaryString;
-    bool ok;
-    quint64 decimalValue = hexString.toULongLong(&ok, 16);
-
-    if (ok) {
-        binaryString = QString::number(decimalValue, 2);
-        binaryString = binaryString.rightJustified(hexString.length() * 4, '0');
-    } else {
-        // Invalid hexadecimal string
-        binaryString = "Invalid";
+QString MainWindow::toHex(const QString& binary,int len){
+    QString hexString;    bool ok;
+    quint64 decimalValue = binary.toULongLong(&ok, 2);
+    if (ok) {        hexString = QString::number(decimalValue, len);
+        hexString = hexString.toUpper();    } else {
+        // Invalid binary string        hexString = "Invalid";
     }
-    return binaryString;
+    return hexString;
 }
 
 
@@ -192,6 +198,37 @@ MainWindow::~MainWindow()
 }
 
 
+QString binaryToHex(QString binary)
+{
+    QString hex;
+
+    while (binary.length() % 4 != 0) {
+        binary.prepend('0');
+    }
+
+    for (int i = 0; i < binary.length(); i += 4) {
+        QString nibble = binary.mid(i, 4);
+        bool ok;
+        int decimal = nibble.toInt(&ok, 2);
+
+        if (ok) {
+            if (decimal < 10) {
+                hex.append(QString::number(decimal));
+            } else {
+                hex.append(QChar('A' + decimal - 10));
+            }
+        } else {
+            // Invalid binary input
+            return QString();
+        }
+    }
+
+    return hex;
+}
+
+
+
+
 void MainWindow::Fill_Micro_Table(QList<QStringList> wordList)
 {
     int currentline = 0;
@@ -206,26 +243,81 @@ void MainWindow::Fill_Micro_Table(QList<QStringList> wordList)
     ui->microprogram->append(newline.join("\n"));
     QMap <QString, int> Labels;
     Labels.clear();
-    foreach (const QStringList& words, wordList) {
+    foreach (const QStringList& words, wordList){
         if (words.at(0) == "END")
             break;
-        if (words.at(0) == "ORG")
+        else if (words.at(0) == "ORG"){
             currentline = words.at(1).toInt();
+            continue;
+        }
+        else if (words.at(0).endsWith(":")){
+            Labels[words.at(0).left(words.at(0).size() - 1)] = currentline;
+        }
+        currentline ++;
+    }
+
+    currentline = 0;
+    foreach (const QStringList& words, wordList) {
+        QString instruct = "";
+        QString content = "";
+
+        if (words.at(0) == "END")
+            break;
+        if (words.at(0) == "ORG"){
+            currentline = words.at(1).toInt();
+            continue;
+        }
         if (words.at(0).endsWith(":")){
             qDebug() << words.at(0) ;
             QString text = words.at(0);
             text = text.chopped(1);
-            ui->Microprogram_Memory->setItem(currentline-1,2,new QTableWidgetItem(text));
-            Labels[words.at(0).left(words.at(0).size() - 1)] = currentline;
+            ui->Microprogram_Memory->setItem(currentline,2,new QTableWidgetItem(text));
+//            Labels[words.at(0).left(words.at(0).size() - 1)] = currentline;
+            instruct = words.mid(1).join(", ");
         }
+        else
+            instruct = words.mid(0).join(", ");
+        ui->Microprogram_Memory->setItem(currentline,3,new QTableWidgetItem(instruct));
+        QStringList cf1 = {} , cf2= {} , cf3 = {} ;
+        QString cd = "" , br = "" ,addr = "";
+        for(int i = 0;i < words.length();i++){
+            if(F1.contains(words[i]))
+                cf1.append(words[i]);
+            else if(F2.contains(words[i]))
+                cf2.append(words[i]);
+            else if(F3.contains(words[i]))
+                cf3.append(words[i]);
+            else if(CD.contains(words[i]))
+                cd = CD[words[i]];
+            else if(BR.contains(words[i]))
+                br = BR[words[i]];
+            else if(words[i] == "NEXT")
+                addr = QString::number(currentline+1, 2).rightJustified(7, '0');
+            else if(Labels.contains(words[i]))
+                addr = QString::number(Labels[words[i]], 2).rightJustified(7, '0');
+        }
+        if(cf1.length() == 0)
+            content += "000";
+        else
+            content += F1[cf1[0]];
+        if(cf2.length() == 0)
+            content += "000";
+        else
+            content += F2[cf2[0]];
+        if(cf3.length() == 0)
+            content += "000";
+        else
+            content += F3[cf3[0]];
+        content += cd;
+        content += br;
+        content += addr;
+        QString hx = binaryToHex(content);
+        qDebug() << content ;
 
-
-
-
-
-
+        ui->Microprogram_Memory->setItem(currentline,4,new QTableWidgetItem(hx));
         currentline ++;
     }
+
 }
 
 void MainWindow::Clear_Micro()

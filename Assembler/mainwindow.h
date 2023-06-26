@@ -16,7 +16,7 @@ public:
     void run_micro(QString instruction);
     QString toBinary(const QString& Hex);
 //    QString toBinary(int dec);
-    QString toHex(const QString& hexString);
+    QString toHex(const QString& hexString,int len =16);
     QString CompleteBits(QString bits, int Length);
 
     ~MainWindow();
