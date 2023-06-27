@@ -71,6 +71,8 @@ MainWindow::MainWindow(QWidget *parent)
     BR["RET"] = "10";
     BR["MAP"] = "11";
 
+//    qDebug() << toHex("4");
+
     for (int var = 0; var < 128; ++var) {
         ui->Microprogram_Memory->insertRow(var);
         ui->Microprogram_Memory->verticalHeader()->setVisible(false);
@@ -132,23 +134,28 @@ void MainWindow::run_micro(QString instruction)
     QString CD = instruction.mid(9, 2);
     QString BR = instruction.mid(11, 2);
     QString AD = instruction.mid(13, 7);
-
-
+    ui->F1->setText(F1);
+    ui->F2->setText(F2);
+    ui->F3->setText(F3);
+    ui->CD->setText(CD);
+    ui->BR->setText(BR);
+    ui->AD->setText(AD);
+    ui->I->setText(DR_tmp[0]);
     // For F1
     if (F1 == "001")
-        ui->AC->setText("0x" + toHex(SumWithCarry(CompleteBits(AC_tmp), CompleteBits(DR_tmp), true))); // check
+        ui->AC->setText("0x" + binaryToHex(SumWithCarry(CompleteBits(AC_tmp), CompleteBits(DR_tmp), true))); // check
     else if (F1 == "010")
         ui->AC->setText("0x0000");
     else if (F1 == "011")
-        ui->AC->setText("0x" + toHex(SumWithCarry(CompleteBits(AC_tmp), CompleteBits("01"))));
+        ui->AC->setText("0x" + binaryToHex(SumWithCarry(CompleteBits(AC_tmp), CompleteBits("01"))));
     else if(F1 == "100")
-        ui->AC->setText("0x" + toHex(CompleteBits(DR_tmp, 16)));
+        ui->AC->setText(ui->DR->text());
     else if(F1 == "101")
         ui->AR->setText(DR_tmp.mid(5));
     else if(F1 == "110")
         ui->AR->setText(PC_tmp);
     else if(ui->F1->text()=="111")
-        ui->Main_Memory->setItem(AR_tmp.toInt(nullptr, 2),4,new QTableWidgetItem("0x" + toHex(CompleteBits(DR_tmp))));
+        ui->Main_Memory->setItem(AR_tmp.toInt(nullptr, 2),4,new QTableWidgetItem("0x" + binaryToHex(CompleteBits(DR_tmp))));
 
     // For F2
     if (F2 == "001")
@@ -160,7 +167,7 @@ void MainWindow::run_micro(QString instruction)
     else if(F2 == "100")
         ui->DR->setText(ui->Main_Memory->item(AR_tmp.toInt(nullptr, 2), 4)->text());  // check
     else if(F2 == "101")
-        ui->DR->setText(toHex(AC_tmp)); // check
+        ui->DR->setText("0x"+binaryToHex(AC_tmp)); // check
     else if(F2 == "110")
         ui->DR->setText(toHex(SumWithCarry(DR_tmp, CompleteBits("01"))));
     else if(F2 == "111")
@@ -198,7 +205,7 @@ void MainWindow::run_micro(QString instruction)
         if (BR == "00")                         // JMP
             ui->CAR->setText(AD);
         else if (BR == "01"){                   // CALL
-            ui->CAR->setText(ui->AD->text());
+            ui->CAR->setText(AD);
             ui->SBR->setText(SumWithCarry(ui->CAR->text(), CompleteBits("01", 7))); // check
         }
         else if (BR == "10")                    // RET
@@ -207,7 +214,10 @@ void MainWindow::run_micro(QString instruction)
             ui->CAR->setText("0"+DR_tmp.mid(1, 4)+"00"); // check
         }
     }
-
+    else{
+        if(BR == "00" || BR == "01")
+            ui->CAR->setText(SumWithCarry(ui->CAR->text(), CompleteBits("01", 7)));
+    }
 }
 
 QString MainWindow::toBinary(int dec)
@@ -287,7 +297,7 @@ QString MainWindow::SumWithCarry(const QString &binaryNumber1, const QString &bi
     QString sum;
     QString carry = "0";
 
-    for (int i = 15; i >= 0; --i) {
+    for (int i = binaryNumber1.length()-1; i >= 0; --i) {
         int bit1 = binaryNumber1.at(i).digitValue();
         int bit2 = binaryNumber2.at(i).digitValue();
         int currentSum = bit1 + bit2 + carry.toInt();
@@ -305,15 +315,15 @@ QString MainWindow::SumWithCarry(const QString &binaryNumber1, const QString &bi
 }
 
 
-QString MainWindow::toBinary(QString Hex)
+QString MainWindow::toBinary(QString hexString)
 {
     bool ok;
-    quint16 binaryValue = Hex.toUShort(&ok, 16); // Convert hexadecimal string to quint16
-    if (!ok) {
-        return QString(); // Return an empty string if the conversion fails
+    int intValue = hexString.toInt(&ok, 16);
+    QString binaryString = QString::number(intValue, 2);
+    int desiredLength = hexString.length() * 4;
+    while (binaryString.length() < desiredLength) {
+        binaryString = "0" + binaryString;
     }
-
-    QString binaryString = QString::number(binaryValue, 2).rightJustified(16, '0'); // Convert quint16 to binary string
     return binaryString;
 }
 MainWindow::~MainWindow()
@@ -437,7 +447,7 @@ void MainWindow::Fill_Micro_Table(QList<QStringList> wordList)
             instruct = words.mid(0).join(", ");
         ui->Microprogram_Memory->setItem(currentline,3,new QTableWidgetItem(instruct));
         QStringList cf1 = {} , cf2= {} , cf3 = {} ;
-        QString cd = "" , br = "" ,addr = "";
+        QString cd = "" , br = "" ,addr = "0000000";
         for(int i = 0;i < words.length();i++){
             if(F1.contains(words[i]))
                 cf1.append(words[i]);
@@ -514,6 +524,15 @@ void MainWindow::Clear_Main()
 
 void MainWindow::on_MicroButton_clicked()
 {
+    ui->PC->setText("00000000000");
+    ui->CAR->setText("1000000");
+    ui->AC->setText("0x0000");
+    ui->DR->setText("0x0000");
+    ui->AR->setText("00000000000");
+    ui->SBR->setText("00000000000");
+    ui->E->setText("0");
+//    ui->E->setText("0");
+
     QString micro = ui->microprogram->toPlainText();
     QStringList lines = micro.split("\n",Qt::SkipEmptyParts);
     QList<QStringList> wordList;
@@ -589,6 +608,7 @@ QString binary16ToHex(const QString& binaryString) {
 
     return hexString;
 }
+
 
 
 void MainWindow::Fill_Main_Table(QList<QStringList> wordList)
@@ -710,4 +730,30 @@ void MainWindow::on_MainButton_clicked()
         currentline ++ ;
     }
     Fill_Main_Table(wordList);
+}
+
+//QString hexToBinary(QString hexString) {
+//    bool ok;
+//    int intValue = hexString.toInt(&ok, 16);
+//    QString binaryString = QString::number(intValue, 2);
+//    int desiredLength = hexString.length() * 4;
+//    while (binaryString.length() < desiredLength) {
+//        binaryString = "0" + binaryString;
+//    }
+//    return binaryString;
+//}
+
+QString MainWindow::CARtoContent(QString CAR)
+{
+    int row = CAR.toInt(nullptr,2);
+//    qDebug() << hexToBinary(QString("0FF41")) ;
+
+    QString content = toBinary(ui->Microprogram_Memory->item(row,4)->text());
+    return content;
+}
+
+
+void MainWindow::on_Compile_clicked()
+{
+    run_micro(CARtoContent(ui->CAR->text()));
 }

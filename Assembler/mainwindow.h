@@ -30,6 +30,7 @@ public:
 
     QString ShiftToLeft(QString binary);                // E will be assign too
     QString ShiftToRight(QString binary);                // E will be assign too
+    QString CARtoContent(QString CAR);
     ~MainWindow();
 
 private slots:
@@ -40,6 +41,8 @@ private slots:
     void Clear_Main();
 
     void on_MainButton_clicked();
+
+    void on_Compile_clicked();
 
 private:
     Ui::MainWindow *ui;
