@@ -26,7 +26,11 @@ public:
 private slots:
     void on_MicroButton_clicked();
     void Fill_Micro_Table(QList<QStringList> wordList);
+    void Fill_Main_Table(QList<QStringList> wordList);
     void Clear_Micro();
+    void Clear_Main();
+
+    void on_MainButton_clicked();
 
 private:
     Ui::MainWindow *ui;
