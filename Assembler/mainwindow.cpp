@@ -120,63 +120,93 @@ void MainWindow::set_regs()
 
 void MainWindow::run_micro(QString instruction)
 {
-    QString AC_tmp = ui->AC->text();
-    QString AR_tmp = ui->AR->text();
-    QString PC_tmp = ui->PC->text();
-    QString DR_tmp = ui->DR->text();
-    QString E_tmp = ui->E->text();
+    QString AC_tmp = toBinary(ui->AC->text().mid(2, 4));   // 16 bits
+    QString AR_tmp = ui->AR->text();                       // 11 bits
+    QString PC_tmp = ui->PC->text();                       // 11 bits
+    QString DR_tmp = toBinary(ui->DR->text().mid(2, 4));   // 16 bits
+//    QString E_tmp  = ui->E->text();
+
+    QString F1 = instruction.mid(0, 3);
+    QString F2 = instruction.mid(3, 3);
+    QString F3 = instruction.mid(6, 3);
+    QString CD = instruction.mid(9, 2);
+    QString BR = instruction.mid(11, 2);
+    QString AD = instruction.mid(13, 7);
+
 
     // For F1
-    if (ui->F1->text()=="001")
-        ui->AC->setText(SumWithCarry(CompleteBits(AC_tmp), CompleteBits(DR_tmp), true));
-
-    else if (ui->F1->text() == "010")
-        ui->AC->setText("0");
-    else if (ui->F1->text()=="011")
-        ui->AC->setText(SumWithCarry(CompleteBits(AC_tmp), CompleteBits("01")));
-    else if(ui->F1->text()=="100")
-        ui->AC->setText(DR_tmp);
-//    else if(ui->F1->text()=="101")
-
-    else if(ui->F1->text()=="110")
+    if (F1 == "001")
+        ui->AC->setText("0x" + toHex(SumWithCarry(CompleteBits(AC_tmp), CompleteBits(DR_tmp), true))); // check
+    else if (F1 == "010")
+        ui->AC->setText("0x0000");
+    else if (F1 == "011")
+        ui->AC->setText("0x" + toHex(SumWithCarry(CompleteBits(AC_tmp), CompleteBits("01"))));
+    else if(F1 == "100")
+        ui->AC->setText("0x" + toHex(CompleteBits(DR_tmp, 16)));
+    else if(F1 == "101")
+        ui->AR->setText(DR_tmp.mid(5));
+    else if(F1 == "110")
         ui->AR->setText(PC_tmp);
-//    else if(ui->F1->text()=="111")
-
+    else if(ui->F1->text()=="111")
+        ui->Main_Memory->setItem(AR_tmp.toInt(nullptr, 2),4,new QTableWidgetItem("0x" + toHex(CompleteBits(DR_tmp))));
 
     // For F2
-    if (ui->F2->text()=="001")
-        ui->AC->setText(SumWithCarry(CompleteBits(AC_tmp), TwoComplement((CompleteBits(DR_tmp)))));
-    else if(ui->F2->text()=="010")
-        ui->AC->setText(OR(AC_tmp, DR_tmp));
-    else if(ui->F2->text()=="011")
-        ui->AC->setText(AND(AC_tmp, DR_tmp));
-//    else if(ui->F2->text()=="100")
-
-    else if(ui->F2->text()=="101")
-        ui->DR->setText(AC_tmp);
-    else if(ui->F2->text()=="110")
-        ui->DR->setText(SumWithCarry(DR_tmp, CompleteBits("01")));
-//    else if(ui->F2->text()=="111")
+    if (F2 == "001")
+        ui->AC->setText("0x" + toHex(SumWithCarry(CompleteBits(AC_tmp), TwoComplement((CompleteBits(DR_tmp))))));
+    else if(F2 == "010")
+        ui->AC->setText("0x" + toHex(OR(AC_tmp, DR_tmp)));
+    else if(F2 == "011")
+        ui->AC->setText("0x" + toHex(AND(AC_tmp, DR_tmp)));
+    else if(F2 == "100")
+        ui->DR->setText(ui->Main_Memory->item(AR_tmp.toInt(nullptr, 2), 4)->text());  // check
+    else if(F2 == "101")
+        ui->DR->setText(toHex(AC_tmp)); // check
+    else if(F2 == "110")
+        ui->DR->setText(toHex(SumWithCarry(DR_tmp, CompleteBits("01"))));
+    else if(F2 == "111")
+        ui->DR->setText(toHex(DR_tmp.left(5) + PC_tmp)); // check
 
 
     // For F3
-    if (ui->F3->text()=="001")
-        ui->AC->setText(XOR(AC_tmp, DR_tmp));
-    else if (ui->F3->text()=="010")
-        ui->AC->setText(OneComplement(AC_tmp));
-    else if (ui->F3->text()=="011")
-        ui->AC->setText(ShiftToLeft(AC_tmp));
-    else if (ui->F3->text()=="100")
-        ui->AC->setText(ShiftToRight(AC_tmp));
-    else if (ui->F3->text()=="101")
-        ui->PC->setText(SumWithCarry(PC_tmp, CompleteBits("01")));
-    else if (ui->F3->text()=="110")
+    if (F3 == "001")
+        ui->AC->setText(toHex(XOR(AC_tmp, DR_tmp)));
+    else if (F3 == "010")
+        ui->AC->setText(toHex(OneComplement(AC_tmp)));
+    else if (F3 == "011")
+        ui->AC->setText(toHex(ShiftToLeft(AC_tmp)));
+    else if (F3 == "100")
+        ui->AC->setText(toHex(ShiftToRight(AC_tmp)));
+    else if (F3 == "101")
+        ui->PC->setText(SumWithCarry(PC_tmp, CompleteBits("01", 11)));
+    else if (F3 == "110")
         ui->PC->setText(AR_tmp);
 //    else if (ui->F3->text()=="111")  // RESERVED
 
 
+    // For CD
+    bool flag = false;
+    if (CD == "00")
+        flag = true;
+    else if (CD == "01" && DR_tmp[0] == '1')
+        flag = true;
+    else if (CD == "10" && AC_tmp[0] == '1')
+        flag = true;
+    else if (CD == "11" && AC_tmp == "0x0000")
+        flag = true;
 
-
+    if (flag){
+        if (BR == "00")                         // JMP
+            ui->CAR->setText(AD);
+        else if (BR == "01"){                   // CALL
+            ui->CAR->setText(ui->AD->text());
+            ui->SBR->setText(SumWithCarry(ui->CAR->text(), CompleteBits("01", 7))); // check
+        }
+        else if (BR == "10")                    // RET
+            ui->CAR->setText(ui->SBR->text());
+        else {                                  // MAP
+            ui->CAR->setText("0"+DR_tmp.mid(1, 4)+"00"); // check
+        }
+    }
 
 }
 
@@ -277,22 +307,15 @@ QString MainWindow::SumWithCarry(const QString &binaryNumber1, const QString &bi
 
 QString MainWindow::toBinary(QString Hex)
 {
-    Hex = CompleteBits(Hex, 4);
-    QString hexString;
     bool ok;
-    quint64 decimalValue = Hex.toULongLong(&ok, 2);
-
-    if (ok) {
-        hexString = QString::number(decimalValue, 16);
-        hexString = hexString.toUpper();
-    } else {
-        // Invalid binary string
-        hexString = "Invalid";
+    quint16 binaryValue = Hex.toUShort(&ok, 16); // Convert hexadecimal string to quint16
+    if (!ok) {
+        return QString(); // Return an empty string if the conversion fails
     }
-    return hexString; // 4 length hex returns 16 bits binary
+
+    QString binaryString = QString::number(binaryValue, 2).rightJustified(16, '0'); // Convert quint16 to binary string
+    return binaryString;
 }
-
-
 MainWindow::~MainWindow()
 {
     delete ui;

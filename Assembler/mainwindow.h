@@ -14,6 +14,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     void set_regs();
     void run_micro(QString instruction);
+
     QString toBinary(QString Hex);          // 4 character hex returns 16 bits binary, 5 returns 20
     QString toBinary(int dec);              // Returns 16 bits
     QString toHex(const QString& binary, int length = 16);
