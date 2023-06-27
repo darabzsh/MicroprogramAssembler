@@ -363,6 +363,7 @@ QString MainWindow::ShiftToRight(QString binary)
 }
 
 QMap <QString, int> Labels;
+QMap<QString,int> var_labels;
 void MainWindow::Fill_Micro_Table(QList<QStringList> wordList)
 {
     int currentline = 0;
@@ -554,6 +555,19 @@ void MainWindow::on_MicroButton_clicked()
     Fill_Micro_Table(wordList);
 }
 
+QString binary16ToHex(const QString& binaryString) {
+    bool ok;
+    int integerValue = binaryString.toInt(&ok, 2);
+    QString hexString = QString::number(integerValue, 16);
+
+    if (hexString.length() < 4) {
+        hexString = hexString.rightJustified(4, '0');
+    }
+
+    return hexString;
+}
+
+
 void MainWindow::Fill_Main_Table(QList<QStringList> wordList)
 {
     int currentline = 0;
@@ -565,17 +579,19 @@ void MainWindow::Fill_Main_Table(QList<QStringList> wordList)
         newline.append(line);
     }
 
+
     ui->mainprogram->append(newline.join("\n"));
     foreach (const QStringList& words, wordList) {
         QString instruct = "";
         QString content = "";
-
         if (words.at(0).toUpper() == "END")
             break;
         if (words.at(0).toUpper() == "ORG"){
             currentline = words.at(1).toInt();
             continue;
         }
+
+        //labels
         if (words.at(0).endsWith(",")){
             qDebug() << words.at(0) ;
             QString text = words.at(0);
@@ -586,16 +602,60 @@ void MainWindow::Fill_Main_Table(QList<QStringList> wordList)
         }
         else
             instruct = words.mid(0).join(", ");
+
+        //instructs
         ui->Main_Memory->setItem(currentline,3,new QTableWidgetItem(instruct));
+
+
+        //contents
+        QString mic_lable = "";
+        QString hexed = "";
+        QString I = "0" ;
+        QString addr = "";
+        bool b = 1;
+        for (int i = 0; i < words.length(); ++i) {
+            if(Labels.contains(words[i]))
+                mic_lable = QString("%1").arg(Labels[words[i]]/4, 4, 2, QChar('0'));
+            else if(words[i] == "HEX" )
+            {
+                hexed = I+ words[i+1].rightJustified(3, QChar('0'));
+                ui->Main_Memory->setItem(currentline,4,new QTableWidgetItem("0x"+hexed.toUpper()));
+                b = 0;
+                break;
+            }
+            else if(words[i] == "DEC")
+            {
+                hexed = I + QString("%1").arg(words[i+1].toInt(), 3, 16, QChar('0'));
+                ui->Main_Memory->setItem(currentline,4,new QTableWidgetItem("0x"+hexed.toUpper()));
+                b = 0;
+                break;
+            }
+            else if(words[i] == "I")
+                I = "1";
+            else if(var_labels.contains(words[i]))
+            {
+                addr = QString("%1").arg(var_labels[words[i]], 11, 2, QChar('0'));
+            }
+
+
+        }
+        if(b)
+        {
+            content = I + mic_lable + hexed + addr;
+            ui->Main_Memory->setItem(currentline,4,new QTableWidgetItem("0x"+binary16ToHex(content).toUpper()));
+        }
+        currentline ++;
     }
 }
 
 void MainWindow::on_MainButton_clicked()
 {
+
     QString main_txt = ui->mainprogram->toPlainText();
     QStringList lines = main_txt.split("\n",Qt::SkipEmptyParts);
     QList<QStringList> wordList;
     qDebug() << Labels ;
+    var_labels.clear();
     bool endbool = true;
     foreach (QString line, lines) {
 //        line.remove(',');
@@ -606,14 +666,25 @@ void MainWindow::on_MainButton_clicked()
     }
     if(endbool)
         QMessageBox::critical(nullptr, "Error", "Main Program must have <END>");
+    int currentline = 0;
     foreach (QStringList x, wordList) {
-        if(x[0].toUpper() == "ORG" || x[0].toUpper() == "END")
+        if(x[0].toUpper() == "ORG")
+        {
+            currentline = x[1].toInt();
+            continue;
+        }
+        if(x[0].toUpper() == "END" || x[0].toUpper() == "HEX")
             continue;
         if(!x[0].endsWith(','))
-            if(!Labels.contains(x[0].left(x[0].length() - 1))){
+            if(!Labels.contains(x[0])){
                 QMessageBox::critical(nullptr, "Error", QString("Main doesnt have %1").arg(x[0]));
                 return;
             }
+        if(x[0].endsWith(','))
+        {
+            var_labels[x[0].chopped(1)] = currentline;
+        }
+        currentline ++ ;
     }
     Fill_Main_Table(wordList);
 }
