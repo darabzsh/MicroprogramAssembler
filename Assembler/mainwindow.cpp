@@ -118,14 +118,14 @@ void MainWindow::reset_colors()
         for (int column = 0; column < ui->Microprogram_Memory->columnCount(); ++column)
         {
             QTableWidgetItem *item = ui->Microprogram_Memory->item(mic_color[i], column);
-            item->setBackground(QColor("white"));
+            item->setBackground(QColor("#222b2e"));
 
         }
     }
     for(int i=0 ; i< main_color.length();i++){
         for (int column = 0; column < ui->Microprogram_Memory->columnCount(); ++column)
         {
-            ui->Main_Memory->item(main_color[i],column)->setBackground(QColor("white"));
+            ui->Main_Memory->item(main_color[i],column)->setBackground(QColor("#222b2e"));
         }
     }
 }
@@ -274,7 +274,8 @@ void MainWindow::run_micro(QString instruction)
     for (int column = 0; column < ui->Microprogram_Memory->columnCount(); ++column)
     {
         QTableWidgetItem *item = ui->Microprogram_Memory->item(scroll1, column);
-        item->setBackground(QColor("yellow"));
+        item->setBackground(QColor("#1f5748"));
+        item->setTextAlignment(Qt::AlignCenter);
         mic_color.append(scroll1);
     }
 }
@@ -498,13 +499,16 @@ void MainWindow::Fill_Micro_Table(QList<QStringList> wordList)
             qDebug() << words.at(0) ;
             QString text = words.at(0);
             text = text.chopped(1);
-            ui->Microprogram_Memory->setItem(currentline,2,new QTableWidgetItem(text));
+            ui->Microprogram_Memory->setItem(currentline, 2, new QTableWidgetItem(text));
+            ui->Microprogram_Memory->item(currentline, 2)->setTextAlignment(Qt::AlignCenter);
 //            Labels[words.at(0).left(words.at(0).size() - 1)] = currentline;
             instruct = words.mid(1).join(", ");
         }
         else
             instruct = words.mid(0).join(", ");
         ui->Microprogram_Memory->setItem(currentline,3,new QTableWidgetItem(instruct));
+        ui->Microprogram_Memory->item(currentline, 3)->setTextAlignment(Qt::AlignCenter);
+
         QStringList cf1 = {} , cf2= {} , cf3 = {} ;
         QString cd = "" , br = "" ,addr = "0000000";
         for(int i = 0;i < words.length();i++){
@@ -542,6 +546,8 @@ void MainWindow::Fill_Micro_Table(QList<QStringList> wordList)
         qDebug() << content ;
 
         ui->Microprogram_Memory->setItem(currentline,4,new QTableWidgetItem(hx));
+        ui->Microprogram_Memory->item(currentline, 4)->setTextAlignment(Qt::AlignCenter);
+
         currentline ++;
     }
     ui->Microprogram_Memory->resizeColumnsToContents();
@@ -696,6 +702,8 @@ void MainWindow::Fill_Main_Table(QList<QStringList> wordList)
             QString text = words.at(0);
             text = text.chopped(1);
             ui->Main_Memory->setItem(currentline,2,new QTableWidgetItem(text));
+            ui->Main_Memory->item(currentline, 2)->setTextAlignment(Qt::AlignCenter);
+
             //            Labels[words.at(0).left(words.at(0).size() - 1)] = currentline;
             instruct = words.mid(1).join(", ");
         }
@@ -704,7 +712,7 @@ void MainWindow::Fill_Main_Table(QList<QStringList> wordList)
 
         //instructs
         ui->Main_Memory->setItem(currentline,3,new QTableWidgetItem(instruct));
-
+        ui->Main_Memory->item(currentline, 3)->setTextAlignment(Qt::AlignCenter);
 
         //contents
         QString mic_lable = "";
@@ -719,6 +727,8 @@ void MainWindow::Fill_Main_Table(QList<QStringList> wordList)
             {
                 hexed = I+ words[i+1].rightJustified(3, QChar('0'));
                 ui->Main_Memory->setItem(currentline,4,new QTableWidgetItem("0x"+hexed.toUpper()));
+                ui->Main_Memory->item(currentline, 4)->setTextAlignment(Qt::AlignCenter);
+
                 b = 0;
                 break;
             }
@@ -729,6 +739,8 @@ void MainWindow::Fill_Main_Table(QList<QStringList> wordList)
                 //check
                 hexed = binaryToHex(toBinary(words[i+1].toInt()));
                 ui->Main_Memory->setItem(currentline,4,new QTableWidgetItem("0x"+hexed.toUpper()));
+                ui->Main_Memory->item(currentline, 4)->setTextAlignment(Qt::AlignCenter);
+
                 b = 0;
                 break;
             }
@@ -743,6 +755,8 @@ void MainWindow::Fill_Main_Table(QList<QStringList> wordList)
         {
             content = I + mic_lable + hexed + addr;
             ui->Main_Memory->setItem(currentline,4,new QTableWidgetItem("0x"+binary16ToHex(content).toUpper()));
+            ui->Main_Memory->item(currentline, 4)->setTextAlignment(Qt::AlignCenter);
+
         }
         currentline ++;
     }
@@ -777,6 +791,8 @@ void MainWindow::on_MainButton_clicked()
     foreach (QStringList x, wordList) {
         if(x[0].toUpper() == "HLT"){
             ui->Main_Memory->setItem(currentline,3,new QTableWidgetItem("HLT"));
+            ui->Main_Memory->item(currentline, 3)->setTextAlignment(Qt::AlignCenter);
+
         }
         if(x[0].toUpper() == "ORG")
         {
@@ -816,6 +832,8 @@ QString MainWindow::CARtoContent(QString CAR)
 {
     int row = CAR.toInt(nullptr,2);
     QString content = toBinary(ui->Microprogram_Memory->item(row,4)->text());
+    ui->Microprogram_Memory->item(row, 4)->setTextAlignment(Qt::AlignCenter);
+
     return content;
 }
 
@@ -826,7 +844,7 @@ void MainWindow::on_debug_clicked()
     reset_colors();
     for (int column = 0; column < ui->Microprogram_Memory->columnCount(); ++column)
     {
-        ui->Main_Memory->item(ui->PC->text().toInt(nullptr,2),column)->setBackground(QColor("yellow"));
+        ui->Main_Memory->item(ui->PC->text().toInt(nullptr,2),column)->setBackground(QColor("#1f5748"));
     }
     main_color.append(ui->PC->text().toInt(nullptr,2));
     if(ui->Main_Memory->item(ui->PC->text().toInt(nullptr,2),3)->text() == "HLT")

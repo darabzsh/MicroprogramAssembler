@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1392</width>
-    <height>702</height>
+    <width>1226</width>
+    <height>693</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,9 +17,40 @@
    <string notr="true">QMainWindow {
 	background-color:#151a1e;
 }
-QCalendar {
-	background-color: #151a1e;
+QTableWidget {
+    background-color: #222b2e;
+    border: 1px solid #4fa08b;
+    border-radius: 7px;
+    color: #d3dae3;
+    selection-background-color: #3a8571;
+    selection-color: #d3dae3;
 }
+
+QTableWidget::item {
+    padding: 5px;
+}
+
+QTableWidget::item:selected {
+    background-color: #1f5748;
+    color: #d3dae3;
+}
+
+QTableWidget QHeaderView::section {
+    background-color: #3a8571;
+    color: #d3dae3;
+    border: none;
+    border-bottom: 1px solid #999999;
+    padding: 5px;
+}
+
+QTableWidget::item:selected::focus {
+    background-color: #3a8571;
+    color: #d3dae3;
+    border: none;
+}
+
+
+
 QTextEdit {
 	border-width: 1px;
 	border-style: solid;
@@ -131,21 +162,8 @@ QLineEdit {
 QLabel {
 	color: #d3dae3;
 }
-QLCDNumber {
-	color: #4d9b87;
-}
-QProgressBar {
-	text-align: center;
-	color: #d3dae3;
-	border-radius: 10px;
-	border-color: transparent;
-	border-style: solid;
-	background-color: #52595d;
-}
-QProgressBar::chunk {
-	background-color: #214037	;
-	border-radius: 10px;
-}
+
+
 QMenuBar {
 	background-color: #151a1e;
 }
@@ -253,44 +271,7 @@ QTabBar::tab:selected, QTabBar::tab:first:selected, QTabBar::tab:hover {
 	background-color: #1e282c;
 }
 
-QCheckBox {
-	color: #d3dae3;
-	padding: 2px;
-}
-QCheckBox:disabled {
-	color: #808086;
-	padding: 2px;
-}
 
-QCheckBox:hover {
-	border-radius:4px;
-	border-style:solid;
-	padding-left: 1px;
-	padding-right: 1px;
-	padding-bottom: 1px;
-	padding-top: 1px;
-	border-width:1px;
-	border-color: transparent;
-}
-QCheckBox::indicator:checked {
-
-	height: 10px;
-	width: 10px;
-	border-style:solid;
-	border-width: 1px;
-	border-color: #4fa08b;
-	color: #000000;
-	background-color: qradialgradient(cx:0.4, cy:0.4, radius: 1.5,fx:0, fy:0, stop:0 #1e282c, stop:0.3 #1e282c, stop:0.4 #4fa08b, stop:0.5 #1e282c, stop:1 #1e282c);
-}
-QCheckBox::indicator:unchecked {
-
-	height: 10px;
-	width: 10px;
-	border-style:solid;
-	border-width: 1px;
-	border-color: #4fa08b;
-	color: #000000;
-}
 QRadioButton {
 	color: #d3dae3;
 	padding: 1px;
@@ -324,52 +305,6 @@ QSpinBox {
 	border-width: 1px;
 	border-style: solid;
 	border-color: #4fa08b;
-}
-QDoubleSpinBox {
-	color: #d3dae3;
-	background-color: #222b2e;
-	border-width: 1px;
-	border-style: solid;
-	border-color: #4fa08b;
-}
-QTimeEdit {
-	color: #d3dae3;
-	background-color: #222b2e;
-	border-width: 1px;
-	border-style: solid;
-	border-color: #4fa08b;
-}
-QDateTimeEdit {
-	color: #d3dae3;
-	background-color: #222b2e;
-	border-width: 1px;
-	border-style: solid;
-	border-color: #4fa08b;
-}
-QDateEdit {
-	color: #d3dae3;
-	background-color: #222b2e;
-	border-width: 1px;
-	border-style: solid;
-	border-color: #4fa08b;
-}
-QFontComboBox {
-	color: #d3dae3;
-	background-color: #222b2e;
-	border-width: 1px;
-	border-style: solid;
-	border-color: #4fa08b;
-}
-QComboBox {
-	color: #d3dae3;
-	background-color: #222b2e;
-	border-width: 1px;
-	border-style: solid;
-	border-color: #4fa08b;
-}
-
-QDial {
-	background: #16a085;
 }
 
 QToolBox {
@@ -661,7 +596,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Run the next line&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="text">
-             <string>Debug</string>
+             <string>Run</string>
             </property>
            </widget>
           </item>
@@ -898,9 +833,36 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                 <height>16777215</height>
                </size>
               </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::AdjustToContents</enum>
+              </property>
+              <property name="autoScrollMargin">
+               <number>12</number>
+              </property>
               <property name="editTriggers">
                <set>QAbstractItemView::NoEditTriggers</set>
               </property>
+              <property name="showDropIndicator" stdset="0">
+               <bool>false</bool>
+              </property>
+              <property name="selectionMode">
+               <enum>QAbstractItemView::NoSelection</enum>
+              </property>
+              <property name="verticalScrollMode">
+               <enum>QAbstractItemView::ScrollPerPixel</enum>
+              </property>
+              <property name="horizontalScrollMode">
+               <enum>QAbstractItemView::ScrollPerPixel</enum>
+              </property>
+              <property name="showGrid">
+               <bool>true</bool>
+              </property>
+              <attribute name="horizontalHeaderCascadingSectionResizes">
+               <bool>false</bool>
+              </attribute>
+              <attribute name="horizontalHeaderStretchLastSection">
+               <bool>false</bool>
+              </attribute>
               <column>
                <property name="text">
                 <string>Address</string>
@@ -956,8 +918,29 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                 <height>381</height>
                </size>
               </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::AdjustToContents</enum>
+              </property>
+              <property name="autoScrollMargin">
+               <number>12</number>
+              </property>
               <property name="editTriggers">
                <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+              <property name="showDropIndicator" stdset="0">
+               <bool>false</bool>
+              </property>
+              <property name="selectionMode">
+               <enum>QAbstractItemView::NoSelection</enum>
+              </property>
+              <property name="verticalScrollMode">
+               <enum>QAbstractItemView::ScrollPerPixel</enum>
+              </property>
+              <property name="horizontalScrollMode">
+               <enum>QAbstractItemView::ScrollPerPixel</enum>
+              </property>
+              <property name="showGrid">
+               <bool>true</bool>
               </property>
               <column>
                <property name="text">
@@ -1032,6 +1015,9 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <height>31</height>
                  </size>
                 </property>
+                <property name="cursor">
+                 <cursorShape>ArrowCursor</cursorShape>
+                </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
                 </property>
@@ -1086,6 +1072,9 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <width>81</width>
                   <height>31</height>
                  </size>
+                </property>
+                <property name="cursor">
+                 <cursorShape>ArrowCursor</cursorShape>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -1142,6 +1131,9 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <height>31</height>
                  </size>
                 </property>
+                <property name="cursor">
+                 <cursorShape>ArrowCursor</cursorShape>
+                </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
                 </property>
@@ -1196,6 +1188,9 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <width>81</width>
                   <height>31</height>
                  </size>
+                </property>
+                <property name="cursor">
+                 <cursorShape>ArrowCursor</cursorShape>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -1252,6 +1247,9 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <height>31</height>
                  </size>
                 </property>
+                <property name="cursor">
+                 <cursorShape>ArrowCursor</cursorShape>
+                </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
                 </property>
@@ -1306,6 +1304,9 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <width>81</width>
                   <height>31</height>
                  </size>
+                </property>
+                <property name="cursor">
+                 <cursorShape>ArrowCursor</cursorShape>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -1362,6 +1363,9 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <height>31</height>
                  </size>
                 </property>
+                <property name="cursor">
+                 <cursorShape>ArrowCursor</cursorShape>
+                </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
                 </property>
@@ -1417,6 +1421,9 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <height>31</height>
                  </size>
                 </property>
+                <property name="cursor">
+                 <cursorShape>ArrowCursor</cursorShape>
+                </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
                 </property>
@@ -1468,6 +1475,9 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <width>81</width>
                   <height>31</height>
                  </size>
+                </property>
+                <property name="cursor">
+                 <cursorShape>ArrowCursor</cursorShape>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -1524,6 +1534,9 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <height>31</height>
                  </size>
                 </property>
+                <property name="cursor">
+                 <cursorShape>ArrowCursor</cursorShape>
+                </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
                 </property>
@@ -1578,6 +1591,9 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <width>81</width>
                   <height>31</height>
                  </size>
+                </property>
+                <property name="cursor">
+                 <cursorShape>ArrowCursor</cursorShape>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -1634,6 +1650,9 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <height>31</height>
                  </size>
                 </property>
+                <property name="cursor">
+                 <cursorShape>ArrowCursor</cursorShape>
+                </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
                 </property>
@@ -1688,6 +1707,9 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <width>81</width>
                   <height>31</height>
                  </size>
+                </property>
+                <property name="cursor">
+                 <cursorShape>ArrowCursor</cursorShape>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -1744,6 +1766,9 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <height>31</height>
                  </size>
                 </property>
+                <property name="cursor">
+                 <cursorShape>ArrowCursor</cursorShape>
+                </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
                 </property>
@@ -1798,6 +1823,9 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <width>81</width>
                   <height>31</height>
                  </size>
+                </property>
+                <property name="cursor">
+                 <cursorShape>ArrowCursor</cursorShape>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -1854,6 +1882,9 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <height>31</height>
                  </size>
                 </property>
+                <property name="cursor">
+                 <cursorShape>ArrowCursor</cursorShape>
+                </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
                 </property>
@@ -1879,7 +1910,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1392</width>
+     <width>1226</width>
      <height>24</height>
     </rect>
    </property>
@@ -1894,7 +1925,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
    </property>
    <widget class="QMenu" name="menuFiles">
     <property name="title">
-     <string>Files</string>
+     <string>File</string>
     </property>
     <addaction name="action_open"/>
     <addaction name="action_save"/>
