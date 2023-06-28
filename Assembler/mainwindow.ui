@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1226</width>
-    <height>693</height>
+    <width>1271</width>
+    <height>633</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -771,7 +771,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
              <widget class="QTextEdit" name="mainprogram">
               <property name="minimumSize">
                <size>
-                <width>230</width>
+                <width>200</width>
                 <height>381</height>
                </size>
               </property>
@@ -1910,7 +1910,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1226</width>
+     <width>1271</width>
      <height>24</height>
     </rect>
    </property>

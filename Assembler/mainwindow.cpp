@@ -225,13 +225,13 @@ void MainWindow::run_micro(QString instruction)
 
     // For F3
     if (F3 == "001")
-        ui->AC->setText(binaryToHex(XOR(AC_tmp, DR_tmp)));
+        ui->AC->setText("0x" + binaryToHex(XOR(AC_tmp, DR_tmp)));
     else if (F3 == "010")
-        ui->AC->setText(binaryToHex(OneComplement(AC_tmp)));
+        ui->AC->setText("0x" + binaryToHex(OneComplement(AC_tmp)));
     else if (F3 == "011")
-        ui->AC->setText(binaryToHex(ShiftToLeft(AC_tmp)));
+        ui->AC->setText("0x" + binaryToHex(ShiftToLeft(AC_tmp)));
     else if (F3 == "100")
-        ui->AC->setText(binaryToHex(ShiftToRight(AC_tmp)));
+        ui->AC->setText("0x" + binaryToHex(ShiftToRight(AC_tmp)));
     else if (F3 == "101")
         ui->PC->setText(SumWithCarry(PC_tmp, CompleteBits("01", 11)));
     else if (F3 == "110")
