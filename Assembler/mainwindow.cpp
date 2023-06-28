@@ -83,8 +83,11 @@ MainWindow::MainWindow(QWidget *parent)
         QString hexString = QString("%1").arg(var, 4, 16, QChar('0'));
         ui->Microprogram_Memory->setItem(var,1, new QTableWidgetItem("0x"+hexString.toUpper()));
         ui->Microprogram_Memory->item(var, 1)->setTextAlignment(Qt::AlignCenter);
+        ui->Microprogram_Memory->setItem(var,2, new QTableWidgetItem(QString("")));
+        ui->Microprogram_Memory->setItem(var,3, new QTableWidgetItem(QString("")));
+        ui->Microprogram_Memory->setItem(var,4, new QTableWidgetItem(QString("")));
     }
-    for (int var = 0; var < 1024; ++var) {
+    for (int var = 0; var < 2048; ++var) {
         ui->Main_Memory->insertRow(var);
         ui->Main_Memory->verticalHeader()->setVisible(false);
         ui->Main_Memory->setItem(var,0, new QTableWidgetItem(QString::number(var)));
@@ -92,6 +95,9 @@ MainWindow::MainWindow(QWidget *parent)
         QString hexString = QString("%1").arg(var, 4, 16, QChar('0'));
         ui->Main_Memory->setItem(var,1, new QTableWidgetItem("0x"+hexString.toUpper()));
         ui->Main_Memory->item(var, 1)->setTextAlignment(Qt::AlignCenter);
+        ui->Main_Memory->setItem(var,2, new QTableWidgetItem(QString("")));
+        ui->Main_Memory->setItem(var,3, new QTableWidgetItem(QString("")));
+        ui->Main_Memory->setItem(var,4, new QTableWidgetItem(QString("")));
     }
     ui->Microprogram_Memory->resizeRowsToContents();
     ui->Microprogram_Memory->resizeColumnsToContents();
@@ -205,8 +211,8 @@ void MainWindow::run_micro(QString instruction)
         if (BR == "00")                         // JMP
             ui->CAR->setText(AD);
         else if (BR == "01"){                   // CALL
-            ui->CAR->setText(AD);
             ui->SBR->setText(SumWithCarry(ui->CAR->text(), CompleteBits("01", 7))); // check
+            ui->CAR->setText(AD);
         }
         else if (BR == "10")                    // RET
             ui->CAR->setText(ui->SBR->text());
@@ -704,23 +710,27 @@ void MainWindow::on_MainButton_clicked()
 //        line.remove(',');
         QStringList lineWords = line.split(" ", Qt::SkipEmptyParts);
         wordList.append(lineWords);
-        if(lineWords[0].toUpper() == "END")
+        if(lineWords[0].toUpper() == "HLT")
             endbool = false;
     }
     if(endbool)
-        QMessageBox::critical(nullptr, "Error", "Main Program must have <END>");
+        QMessageBox::critical(nullptr, "Error", "Main Program must have <HLT>");
     int currentline = 0;
     foreach (QStringList x, wordList) {
+        if(x[0].toUpper() == "HLT"){
+            ui->Main_Memory->setItem(currentline,3,new QTableWidgetItem("HLT"));
+//            ui->Main_Memory->setItem(currentline,4,new QTableWidgetItem("-"));
+        }
         if(x[0].toUpper() == "ORG")
         {
             currentline = x[1].toInt();
             continue;
         }
-        if(x[0].toUpper() == "END" || x[0].toUpper() == "HEX")
+        if(x[0].toUpper() == "HLT" || x[0].toUpper() == "HEX")
             continue;
         if(!x[0].endsWith(','))
             if(!Labels.contains(x[0])){
-                QMessageBox::critical(nullptr, "Error", QString("Main doesnt have %1").arg(x[0]));
+                QMessageBox::critical(nullptr, "Error", QString("MicroProgram doesnt have %1").arg(x[0]));
                 return;
             }
         if(x[0].endsWith(','))
@@ -745,15 +755,38 @@ void MainWindow::on_MainButton_clicked()
 
 QString MainWindow::CARtoContent(QString CAR)
 {
+//    qDebug() << "dasdasdad" ;
     int row = CAR.toInt(nullptr,2);
 //    qDebug() << hexToBinary(QString("0FF41")) ;
 
     QString content = toBinary(ui->Microprogram_Memory->item(row,4)->text());
+//    qDebug() << content ;
     return content;
 }
 
 
 void MainWindow::on_Compile_clicked()
 {
-    run_micro(CARtoContent(ui->CAR->text()));
+    qDebug() << "\nasada1" ;
+    if(ui->Main_Memory->item(ui->PC->text().toInt(nullptr,2),3)->text() == "HLT")
+    {
+        QMessageBox::warning(nullptr, "Finished", QString("The Program has reached the end... !"));
+        return;
+    }
+    qDebug() << "asada2" ;
+//    qDebug() << ui->PC->text().toInt(nullptr,2) ;
+//    qDebug() << ui->Main_Memory->item(ui->PC->text().toInt(nullptr,2),2) ;
+    bool isPresent = true;
+    int a = ui->PC->text().toInt(nullptr,2);
+    QList<int> valuesList = var_labels.values();
+    for (const int value : valuesList) {
+        if (value == a) {
+            isPresent = false;
+            break;
+        }
+    }
+    if((ui->PC->text().toInt(nullptr,2) == 0)|| (isPresent && (ui->Main_Memory->item(ui->PC->text().toInt(nullptr,2)-1,4)->text() != "") ))
+        run_micro(CARtoContent(ui->CAR->text()));
+    else
+        ui->PC->setText(SumWithCarry(ui->PC->text(),"00000000001"));
 }
