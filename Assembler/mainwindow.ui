@@ -6,22 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1291</width>
-    <height>693</height>
+    <width>1289</width>
+    <height>695</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">/*
-ManjaroMix Style Sheet for QT Applications
-Author: Jaime A. Quiroga P.
-Company: GTRONICK
-Last updated: 25/02/2020, 15:42.
-Available at: https://github.com/GTRONICK/QSS/blob/master/ManjaroMix.qss
-*/
-QMainWindow {
+   <string notr="true">QMainWindow {
 	background-color:#151a1e;
 }
 QCalendar {
@@ -31,6 +24,7 @@ QTextEdit {
 	border-width: 1px;
 	border-style: solid;
 	border-color: #4fa08b;
+	border-radius: 7px;
 	background-color: #222b2e;
 	color: #d3dae3;
 }
@@ -38,6 +32,7 @@ QPlainTextEdit {
 	border-width: 1px;
 	border-style: solid;
 	border-color: #4fa08b;
+	border-radius: 7px;
 	background-color: #222b2e;
 	color: #d3dae3;
 }
@@ -79,7 +74,7 @@ QToolButton:pressed{
 }
 QPushButton{
 	border-style: solid;
-	border-color: #050a0e;
+	border-color: #4fa08b;
 	border-width: 1px;
 	border-radius: 5px;
 	color: #d3dae3;
@@ -130,6 +125,7 @@ QLineEdit {
 	border-style: solid;
 	border-color: #4fa08b;
 	background-color: #222b2e;
+	border-radius: 7px;
 	color: #d3dae3;
 }
 QLabel {
@@ -549,9 +545,9 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
          <spacer name="horizontalSpacer_2">
           <property name="orientation">
@@ -594,6 +590,9 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Fill microprogram memory&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
             <property name="text">
              <string>MicroProgram</string>
             </property>
@@ -623,6 +622,9 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Fill mainprogram memory&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
             <property name="text">
              <string>MainProgram</string>
             </property>
@@ -630,6 +632,38 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
           </item>
           <item>
            <spacer name="verticalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>14</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="debug">
+            <property name="minimumSize">
+             <size>
+              <width>111</width>
+              <height>51</height>
+             </size>
+            </property>
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Run the next line&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="text">
+             <string>Debug</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_7">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
             </property>
@@ -651,6 +685,9 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
             </property>
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Compile the program&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="text">
              <string>Compile</string>
@@ -680,6 +717,9 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
             </property>
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Close the program&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="text">
              <string>Exit</string>
@@ -720,7 +760,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_21">
+       <layout class="QVBoxLayout" name="verticalLayout_23">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_3">
           <item>
@@ -734,7 +774,10 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                </font>
               </property>
               <property name="text">
-               <string>Microprogram : </string>
+               <string>Microprogram </string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
               </property>
              </widget>
             </item>
@@ -751,6 +794,12 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                 <width>150</width>
                 <height>16777215</height>
                </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Microsoft Sans Serif</family>
+                <pointsize>10</pointsize>
+               </font>
               </property>
               <property name="cursor" stdset="0">
                <cursorShape>IBeamCursor</cursorShape>
@@ -770,7 +819,10 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                </font>
               </property>
               <property name="text">
-               <string>Mainprogram : </string>
+               <string>Mainprogram </string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
               </property>
              </widget>
             </item>
@@ -788,6 +840,12 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                 <height>16777215</height>
                </size>
               </property>
+              <property name="font">
+               <font>
+                <family>Microsoft Sans Serif</family>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
               <property name="cursor" stdset="0">
                <cursorShape>IBeamCursor</cursorShape>
               </property>
@@ -803,87 +861,126 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
            </widget>
           </item>
           <item>
-           <widget class="QTableWidget" name="Main_Memory">
-            <property name="minimumSize">
-             <size>
-              <width>200</width>
-              <height>381</height>
-             </size>
-            </property>
-            <column>
-             <property name="text">
-              <string>Address</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Hex</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Label</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Instruction</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Contents</string>
-             </property>
-            </column>
-           </widget>
+           <layout class="QVBoxLayout" name="verticalLayout_22">
+            <item>
+             <widget class="QLabel" name="label_19">
+              <property name="font">
+               <font>
+                <family>Microsoft Sans Serif</family>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>Microprogram memory</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QTableWidget" name="Microprogram_Memory">
+              <property name="minimumSize">
+               <size>
+                <width>200</width>
+                <height>381</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>631</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+              <column>
+               <property name="text">
+                <string>Address</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Hex</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Label</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Instruction</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Contents</string>
+               </property>
+              </column>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item>
-           <widget class="Line" name="line_8">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QTableWidget" name="Microprogram_Memory">
-            <property name="minimumSize">
-             <size>
-              <width>200</width>
-              <height>381</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>631</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <column>
-             <property name="text">
-              <string>Address</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Hex Address</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Label</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Instruction</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Contents</string>
-             </property>
-            </column>
-           </widget>
+           <layout class="QVBoxLayout" name="verticalLayout_21">
+            <item>
+             <widget class="QLabel" name="label_20">
+              <property name="font">
+               <font>
+                <family>Microsoft Sans Serif</family>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>Main memory</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QTableWidget" name="Main_Memory">
+              <property name="minimumSize">
+               <size>
+                <width>200</width>
+                <height>381</height>
+               </size>
+              </property>
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+              <column>
+               <property name="text">
+                <string>Address</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Hex</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Label</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Instruction</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Contents</string>
+               </property>
+              </column>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>
@@ -928,6 +1025,12 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <width>81</width>
                   <height>31</height>
                  </size>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -978,6 +1081,12 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <height>31</height>
                  </size>
                 </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
                </widget>
               </item>
              </layout>
@@ -1026,6 +1135,12 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <width>81</width>
                   <height>31</height>
                  </size>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -1076,6 +1191,12 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <height>31</height>
                  </size>
                 </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
                </widget>
               </item>
              </layout>
@@ -1124,6 +1245,12 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <width>81</width>
                   <height>31</height>
                  </size>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -1174,6 +1301,12 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <height>31</height>
                  </size>
                 </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
                </widget>
               </item>
              </layout>
@@ -1222,6 +1355,12 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <width>81</width>
                   <height>31</height>
                  </size>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -1272,6 +1411,12 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <height>31</height>
                  </size>
                 </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
                </widget>
               </item>
              </layout>
@@ -1317,6 +1462,12 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <width>81</width>
                   <height>31</height>
                  </size>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -1367,6 +1518,12 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <height>31</height>
                  </size>
                 </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
                </widget>
               </item>
              </layout>
@@ -1415,6 +1572,12 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <width>81</width>
                   <height>31</height>
                  </size>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -1465,6 +1628,12 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <height>31</height>
                  </size>
                 </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
                </widget>
               </item>
              </layout>
@@ -1513,6 +1682,12 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <width>81</width>
                   <height>31</height>
                  </size>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -1563,6 +1738,12 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <height>31</height>
                  </size>
                 </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
                </widget>
               </item>
              </layout>
@@ -1611,6 +1792,12 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <width>81</width>
                   <height>31</height>
                  </size>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -1661,6 +1848,12 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                   <height>31</height>
                  </size>
                 </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
                </widget>
               </item>
              </layout>
@@ -1680,7 +1873,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1291</width>
+     <width>1289</width>
      <height>24</height>
     </rect>
    </property>

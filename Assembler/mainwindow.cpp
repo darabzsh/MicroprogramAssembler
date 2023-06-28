@@ -99,11 +99,10 @@ MainWindow::MainWindow(QWidget *parent)
         ui->Main_Memory->setItem(var,3, new QTableWidgetItem(QString("")));
         ui->Main_Memory->setItem(var,4, new QTableWidgetItem(QString("")));
     }
-    ui->Microprogram_Memory->resizeRowsToContents();
+//    ui->Microprogram_Memory->resizeRowsToContents();
     ui->Microprogram_Memory->resizeColumnsToContents();
-    ui->Main_Memory->resizeRowsToContents();
+//    ui->Main_Memory->resizeRowsToContents();
     ui->Main_Memory->resizeColumnsToContents();
-    //    ui->Main_Memory-
 }
 
 void MainWindow::set_regs()
@@ -147,6 +146,9 @@ void MainWindow::run_micro(QString instruction)
     ui->BR->setText(BR);
     ui->AD->setText(AD);
     ui->I->setText(DR_tmp[0]);
+    ui->OpCode->setText(DR_tmp.mid(1, 4));
+    ui->ADDR->setText(DR_tmp.mid(5));
+
     // For F1
     if (F1 == "001")
         ui->AC->setText("0x" + binaryToHex(SumWithCarry(CompleteBits(AC_tmp), CompleteBits(DR_tmp), true))); // check
@@ -491,7 +493,8 @@ void MainWindow::Fill_Micro_Table(QList<QStringList> wordList)
         ui->Microprogram_Memory->setItem(currentline,4,new QTableWidgetItem(hx));
         currentline ++;
     }
-
+    ui->Microprogram_Memory->resizeColumnsToContents();
+    ui->Main_Memory->resizeColumnsToContents();
 }
 
 
@@ -695,6 +698,8 @@ void MainWindow::Fill_Main_Table(QList<QStringList> wordList)
         }
         currentline ++;
     }
+    ui->Microprogram_Memory->resizeColumnsToContents();
+    ui->Main_Memory->resizeColumnsToContents();
 }
 
 void MainWindow::on_MainButton_clicked()
