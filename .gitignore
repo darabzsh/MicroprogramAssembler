@@ -70,5 +70,5 @@ CMakeLists.txt.user*
 # Binaries
 # --------
 *.dll
-*.exe
+
 
