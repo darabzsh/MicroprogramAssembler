@@ -833,6 +833,14 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                 <height>16777215</height>
                </size>
               </property>
+              <property name="font">
+               <font>
+                <pointsize>9</pointsize>
+               </font>
+              </property>
+              <property name="horizontalScrollBarPolicy">
+               <enum>Qt::ScrollBarAsNeeded</enum>
+              </property>
               <property name="sizeAdjustPolicy">
                <enum>QAbstractScrollArea::AdjustToContents</enum>
               </property>
@@ -918,6 +926,14 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                 <height>381</height>
                </size>
               </property>
+              <property name="font">
+               <font>
+                <pointsize>9</pointsize>
+               </font>
+              </property>
+              <property name="horizontalScrollBarPolicy">
+               <enum>Qt::ScrollBarAsNeeded</enum>
+              </property>
               <property name="sizeAdjustPolicy">
                <enum>QAbstractScrollArea::AdjustToContents</enum>
               </property>
@@ -942,6 +958,9 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
               <property name="showGrid">
                <bool>true</bool>
               </property>
+              <attribute name="horizontalHeaderCascadingSectionResizes">
+               <bool>false</bool>
+              </attribute>
               <column>
                <property name="text">
                 <string>Address</string>
@@ -1911,7 +1930,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
      <x>0</x>
      <y>0</y>
      <width>1271</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="font">

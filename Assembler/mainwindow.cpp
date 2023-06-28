@@ -203,8 +203,10 @@ void MainWindow::run_micro(QString instruction)
         ui->AR->setText(DR_tmp.mid(5));
     else if(F1 == "110")
         ui->AR->setText(PC_tmp);
-    else if(ui->F1->text()=="111")
+    else if(ui->F1->text()=="111"){
         ui->Main_Memory->setItem(AR_tmp.toInt(nullptr, 2),4,new QTableWidgetItem("0x" + binaryToHex(CompleteBits(DR_tmp))));
+        ui->Main_Memory->item(AR_tmp.toInt(nullptr, 2),4)->setTextAlignment(Qt::AlignCenter);
+    }
 
     // For F2
     if (F2 == "001")
