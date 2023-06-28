@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1289</width>
-    <height>695</height>
+    <width>1478</width>
+    <height>747</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -645,6 +645,9 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
           </item>
           <item>
            <widget class="QPushButton" name="debug">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="minimumSize">
              <size>
               <width>111</width>
@@ -677,6 +680,9 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
           </item>
           <item>
            <widget class="QPushButton" name="Compile">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="minimumSize">
              <size>
               <width>111</width>
@@ -1873,8 +1879,8 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1289</width>
-     <height>24</height>
+     <width>1478</width>
+     <height>22</height>
     </rect>
    </property>
   </widget>

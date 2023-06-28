@@ -3,6 +3,8 @@
 #include "QMap"
 #include <QDebug>
 #include <QMessageBox>
+#include <QColor>
+
 QMap <QString, QString> F1,F2,F3,CD,BR;
 
 QString f1 = "-",
@@ -28,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    qDebug() << toBinary(15);
     ui->setupUi(this);
     // For F1
     F1["NOP"] = "000";
@@ -105,6 +108,30 @@ MainWindow::MainWindow(QWidget *parent)
     ui->Main_Memory->resizeColumnsToContents();
 }
 
+QList<int> mic_color;
+QList<int> main_color;
+
+void MainWindow::reset_colors()
+{
+    for(int i=0 ; i< mic_color.length();i++){
+        for (int column = 0; column < ui->Microprogram_Memory->columnCount(); ++column)
+        {
+            QTableWidgetItem *item = ui->Microprogram_Memory->item(mic_color[i], column);
+            item->setBackground(QColor("white"));
+
+        }
+    }
+    for(int i=0 ; i< main_color.length();i++){
+        for (int column = 0; column < ui->Microprogram_Memory->columnCount(); ++column)
+        {
+            ui->Main_Memory->item(main_color[i],column)->setBackground(QColor("white"));
+        }
+    }
+}
+
+
+
+
 void MainWindow::set_regs()
 {
     if (f1 != "-") ui->F1->setText(f1);
@@ -124,6 +151,8 @@ void MainWindow::set_regs()
     if (e != "-") ui->F1->setText(e);
     if (opcode != "-") ui->F1->setText(opcode);
 }
+
+int scroll1 = 64;
 
 void MainWindow::run_micro(QString instruction)
 {
@@ -149,6 +178,17 @@ void MainWindow::run_micro(QString instruction)
     ui->OpCode->setText(DR_tmp.mid(1, 4));
     ui->ADDR->setText(DR_tmp.mid(5));
 
+
+//    scroll1 = ui->CAR->text().toInt(nullptr,2);
+//    ui->Microprogram_Memory->scrollToItem(ui->Microprogram_Memory->item(scroll1, 0));
+
+//    for (int column = 0; column < ui->Microprogram_Memory->columnCount(); ++column)
+//    {
+//        QTableWidgetItem *item = ui->Microprogram_Memory->item(scroll1, column);
+//        item->setBackground(QColor("white"));
+//        ui->Main_Memory->item(ui->PC->text().toInt(nullptr,2),column)->setBackground(QColor("white"));
+//    }
+
     // For F1
     if (F1 == "001")
         ui->AC->setText("0x" + binaryToHex(SumWithCarry(CompleteBits(AC_tmp), CompleteBits(DR_tmp), true))); // check
@@ -167,30 +207,30 @@ void MainWindow::run_micro(QString instruction)
 
     // For F2
     if (F2 == "001")
-        ui->AC->setText("0x" + toHex(SumWithCarry(CompleteBits(AC_tmp), TwoComplement((CompleteBits(DR_tmp))))));
+        ui->AC->setText("0x" + binaryToHex(SumWithCarry(CompleteBits(AC_tmp), TwoComplement((CompleteBits(DR_tmp))))));
     else if(F2 == "010")
-        ui->AC->setText("0x" + toHex(OR(AC_tmp, DR_tmp)));
+        ui->AC->setText("0x" + binaryToHex(OR(AC_tmp, DR_tmp)));
     else if(F2 == "011")
-        ui->AC->setText("0x" + toHex(AND(AC_tmp, DR_tmp)));
+        ui->AC->setText("0x" + binaryToHex(AND(AC_tmp, DR_tmp)));
     else if(F2 == "100")
         ui->DR->setText(ui->Main_Memory->item(AR_tmp.toInt(nullptr, 2), 4)->text());  // check
     else if(F2 == "101")
         ui->DR->setText("0x"+binaryToHex(AC_tmp)); // check
     else if(F2 == "110")
-        ui->DR->setText(toHex(SumWithCarry(DR_tmp, CompleteBits("01"))));
+        ui->DR->setText(binaryToHex(SumWithCarry(DR_tmp, CompleteBits("01"))));
     else if(F2 == "111")
-        ui->DR->setText(toHex(DR_tmp.left(5) + PC_tmp)); // check
+        ui->DR->setText(binaryToHex(DR_tmp.left(5) + PC_tmp)); // check
 
 
     // For F3
     if (F3 == "001")
-        ui->AC->setText(toHex(XOR(AC_tmp, DR_tmp)));
+        ui->AC->setText(binaryToHex(XOR(AC_tmp, DR_tmp)));
     else if (F3 == "010")
-        ui->AC->setText(toHex(OneComplement(AC_tmp)));
+        ui->AC->setText(binaryToHex(OneComplement(AC_tmp)));
     else if (F3 == "011")
-        ui->AC->setText(toHex(ShiftToLeft(AC_tmp)));
+        ui->AC->setText(binaryToHex(ShiftToLeft(AC_tmp)));
     else if (F3 == "100")
-        ui->AC->setText(toHex(ShiftToRight(AC_tmp)));
+        ui->AC->setText(binaryToHex(ShiftToRight(AC_tmp)));
     else if (F3 == "101")
         ui->PC->setText(SumWithCarry(PC_tmp, CompleteBits("01", 11)));
     else if (F3 == "110")
@@ -225,6 +265,16 @@ void MainWindow::run_micro(QString instruction)
     else{
         if(BR == "00" || BR == "01")
             ui->CAR->setText(SumWithCarry(ui->CAR->text(), CompleteBits("01", 7)));
+    }
+
+    scroll1 = ui->CAR->text().toInt(nullptr,2);
+    ui->Microprogram_Memory->scrollToItem(ui->Microprogram_Memory->item(scroll1, 0));
+
+    for (int column = 0; column < ui->Microprogram_Memory->columnCount(); ++column)
+    {
+        QTableWidgetItem *item = ui->Microprogram_Memory->item(scroll1, column);
+        item->setBackground(QColor("yellow"));
+        mic_color.append(scroll1);
     }
 }
 
@@ -533,6 +583,7 @@ void MainWindow::Clear_Main()
 
 void MainWindow::on_MicroButton_clicked()
 {
+    reset_colors();
     ui->PC->setText("00000000000");
     ui->CAR->setText("1000000");
     ui->AC->setText("0x0000");
@@ -677,7 +728,10 @@ void MainWindow::Fill_Main_Table(QList<QStringList> wordList)
             }
             else if(words[i] == "DEC")
             {
-                hexed = I + QString("%1").arg(words[i+1].toInt(), 3, 16, QChar('0'));
+//                hexed = I + QString("%1").arg(words[i+1].toInt(), 3, 16, QChar('0'));
+
+                //check
+                hexed = binaryToHex(toBinary(words[i+1].toInt()));
                 ui->Main_Memory->setItem(currentline,4,new QTableWidgetItem("0x"+hexed.toUpper()));
                 b = 0;
                 break;
@@ -704,7 +758,8 @@ void MainWindow::Fill_Main_Table(QList<QStringList> wordList)
 
 void MainWindow::on_MainButton_clicked()
 {
-
+    on_MicroButton_clicked();
+    reset_colors();
     QString main_txt = ui->mainprogram->toPlainText();
     QStringList lines = main_txt.split("\n",Qt::SkipEmptyParts);
     QList<QStringList> wordList;
@@ -718,8 +773,12 @@ void MainWindow::on_MainButton_clicked()
         if(lineWords[0].toUpper() == "HLT")
             endbool = false;
     }
-    if(endbool)
+    if(endbool){
+        ui->Compile->setDisabled(1);
+        ui->debug->setDisabled(1);
         QMessageBox::critical(nullptr, "Error", "Main Program must have <HLT>");
+        return;
+    }
     int currentline = 0;
     foreach (QStringList x, wordList) {
         if(x[0].toUpper() == "HLT"){
@@ -744,6 +803,8 @@ void MainWindow::on_MainButton_clicked()
         }
         currentline ++ ;
     }
+    ui->Compile->setEnabled(1);
+    ui->debug->setEnabled(1);
     Fill_Main_Table(wordList);
 }
 
@@ -770,19 +831,25 @@ QString MainWindow::CARtoContent(QString CAR)
 }
 
 
-void MainWindow::on_Compile_clicked()
+void MainWindow::on_debug_clicked()
 {
-    qDebug() << "\nasada1" ;
+//    qDebug() << "\nasada1" ;
+    reset_colors();
+    for (int column = 0; column < ui->Microprogram_Memory->columnCount(); ++column)
+    {
+        ui->Main_Memory->item(ui->PC->text().toInt(nullptr,2),column)->setBackground(QColor("yellow"));
+    }
+    main_color.append(ui->PC->text().toInt(nullptr,2));
     if(ui->Main_Memory->item(ui->PC->text().toInt(nullptr,2),3)->text() == "HLT")
     {
         QMessageBox::warning(nullptr, "Finished", QString("The Program has reached the end... !"));
         return;
     }
-    qDebug() << "asada2" ;
+//    qDebug() << "asada2" ;
 //    qDebug() << ui->PC->text().toInt(nullptr,2) ;
 //    qDebug() << ui->Main_Memory->item(ui->PC->text().toInt(nullptr,2),2) ;
     bool isPresent = true;
-    int a = ui->PC->text().toInt(nullptr,2);
+    int a = ui->PC->text().toInt(nullptr,2)-1;
     QList<int> valuesList = var_labels.values();
     for (const int value : valuesList) {
         if (value == a) {
@@ -795,3 +862,11 @@ void MainWindow::on_Compile_clicked()
     else
         ui->PC->setText(SumWithCarry(ui->PC->text(),"00000000001"));
 }
+
+void MainWindow::on_Compile_clicked()
+{
+    while (ui->Main_Memory->item(ui->PC->text().toInt(nullptr,2),3)->text() != "HLT") {
+        on_debug_clicked();
+    }
+}
+
