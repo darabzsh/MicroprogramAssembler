@@ -8,30 +8,10 @@
 #include <QFileDialog>
 QMap <QString, QString> F1,F2,F3,CD,BR;
 
-QString f1 = "-",
-    f2 = "-",
-    f3 = "-",
-    cd = "-",
-    br = "-",
-    ad = "-",
-    sbr = "-",
-    car = "-",
-    ar = "-",
-    ac = "-",
-    pc = "-",
-    dr = "-",
-    addr = "-",
-    i = "-",
-    e = "-",
-    opcode = "-";
-
-
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-    qDebug() << toBinary(15);
     ui->setupUi(this);
     // For F1
     F1["NOP"] = "000";
@@ -75,8 +55,7 @@ MainWindow::MainWindow(QWidget *parent)
     BR["RET"] = "10";
     BR["MAP"] = "11";
 
-//    qDebug() << toHex("4");
-
+    // Create tables
     for (int var = 0; var < 128; ++var) {
         ui->Microprogram_Memory->insertRow(var);
         ui->Microprogram_Memory->verticalHeader()->setVisible(false);
@@ -103,9 +82,7 @@ MainWindow::MainWindow(QWidget *parent)
         ui->Main_Memory->setItem(var,3, new QTableWidgetItem(QString("")));
         ui->Main_Memory->setItem(var,4, new QTableWidgetItem(QString("")));
     }
-//    ui->Microprogram_Memory->resizeRowsToContents();
     ui->Microprogram_Memory->resizeColumnsToContents();
-//    ui->Main_Memory->resizeRowsToContents();
     ui->Main_Memory->resizeColumnsToContents();
 }
 
@@ -119,7 +96,6 @@ void MainWindow::reset_colors()
         {
             QTableWidgetItem *item = ui->Microprogram_Memory->item(mic_color[i], column);
             item->setBackground(QColor("#222b2e"));
-
         }
     }
     for(int i=0 ; i< main_color.length();i++){
@@ -131,28 +107,6 @@ void MainWindow::reset_colors()
 }
 
 
-
-
-void MainWindow::set_regs()
-{
-    if (f1 != "-") ui->F1->setText(f1);
-    if (f2 != "-") ui->F1->setText(f2);
-    if (f3 != "-") ui->F1->setText(f3);
-    if (cd != "-") ui->F1->setText(cd);
-    if (br != "-") ui->F1->setText(br);
-    if (ad != "-") ui->F1->setText(ad);
-    if (sbr != "-") ui->F1->setText(sbr);
-    if (car != "-") ui->F1->setText(car);
-    if (ar != "-") ui->F1->setText(ar);
-    if (ac != "-") ui->F1->setText(ac);
-    if (pc != "-") ui->F1->setText(pc);
-    if (dr != "-") ui->F1->setText(dr);
-    if (addr != "-") ui->F1->setText(addr);
-    if (i != "-") ui->F1->setText(i);
-    if (e != "-") ui->F1->setText(e);
-    if (opcode != "-") ui->F1->setText(opcode);
-}
-
 int scroll1 = 64;
 
 void MainWindow::run_micro(QString instruction)
@@ -161,7 +115,6 @@ void MainWindow::run_micro(QString instruction)
     QString AR_tmp = ui->AR->text();                       // 11 bits
     QString PC_tmp = ui->PC->text();                       // 11 bits
     QString DR_tmp = toBinary(ui->DR->text().mid(2, 4));   // 16 bits
-//    QString E_tmp  = ui->E->text();
 
     QString F1 = instruction.mid(0, 3);
     QString F2 = instruction.mid(3, 3);
@@ -169,6 +122,7 @@ void MainWindow::run_micro(QString instruction)
     QString CD = instruction.mid(9, 2);
     QString BR = instruction.mid(11, 2);
     QString AD = instruction.mid(13, 7);
+
     ui->F1->setText(F1);
     ui->F2->setText(F2);
     ui->F3->setText(F3);
@@ -178,17 +132,6 @@ void MainWindow::run_micro(QString instruction)
     ui->I->setText(DR_tmp[0]);
     ui->OpCode->setText(DR_tmp.mid(1, 4));
     ui->ADDR->setText(DR_tmp.mid(5));
-
-
-//    scroll1 = ui->CAR->text().toInt(nullptr,2);
-//    ui->Microprogram_Memory->scrollToItem(ui->Microprogram_Memory->item(scroll1, 0));
-
-//    for (int column = 0; column < ui->Microprogram_Memory->columnCount(); ++column)
-//    {
-//        QTableWidgetItem *item = ui->Microprogram_Memory->item(scroll1, column);
-//        item->setBackground(QColor("white"));
-//        ui->Main_Memory->item(ui->PC->text().toInt(nullptr,2),column)->setBackground(QColor("white"));
-//    }
 
     // For F1
     if (F1 == "001")
@@ -270,6 +213,8 @@ void MainWindow::run_micro(QString instruction)
             ui->CAR->setText(SumWithCarry(ui->CAR->text(), CompleteBits("01", 7)));
     }
 
+
+    // Scroll to next address
     scroll1 = ui->CAR->text().toInt(nullptr,2);
     ui->Microprogram_Memory->scrollToItem(ui->Microprogram_Memory->item(scroll1, 0));
 
@@ -291,7 +236,6 @@ QString MainWindow::toBinary(int dec)
         NormalBinary.prepend(QString::number(remainder));
         number /= 2;
     }
-
     NormalBinary.prepend("0");
     NormalBinary = CompleteBits(NormalBinary, 16);
     if (dec < 0)
@@ -306,7 +250,6 @@ QString MainWindow::toHex(const QString& binary, int length)
     QString hexString;
     bool ok;
     quint64 decimalValue = binary.toULongLong(&ok, 2);
-
     if (ok) {
         hexString = QString::number(decimalValue, length);
         hexString = hexString.toUpper();
@@ -329,7 +272,6 @@ QString MainWindow::CompleteBits(QString bits, int Length)
         adder = "1";
     else if (bits[0] == 'F')
         adder = "F";
-
     for (int i = 0; i < Length - bitsLength; i++){
         bits.prepend(adder);
     }
@@ -369,10 +311,7 @@ QString MainWindow::SumWithCarry(const QString &binaryNumber1, const QString &bi
     }
     if (mode){
         ui->E->setText(carry);
-        qDebug() << carry;
     }
-
-
     return sum;
 }
 
@@ -388,6 +327,7 @@ QString MainWindow::toBinary(QString hexString)
     }
     return binaryString;
 }
+
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -458,13 +398,14 @@ QString MainWindow::ShiftToRight(QString binary)
 }
 
 QMap <QString, int> Labels;
-QMap<QString,int> var_labels;
+QMap <QString, int> var_labels;
 void MainWindow::Fill_Micro_Table(QList<QStringList> wordList)
 {
     int currentline = 0;
     ui->microprogram->clear();
     Clear_Micro();
     QStringList newline;
+    // Clear additional spaces and lines
     foreach (const QStringList& words, wordList) {
         QString line = words.join(" ");
         newline.append(line);
@@ -472,7 +413,8 @@ void MainWindow::Fill_Micro_Table(QList<QStringList> wordList)
 
     ui->microprogram->append(newline.join("\n"));
 
-    Labels.clear();
+
+    Labels.clear(); // Updating labels
     foreach (const QStringList& words, wordList){
         if (words.at(0) == "END")
             break;
@@ -498,12 +440,10 @@ void MainWindow::Fill_Micro_Table(QList<QStringList> wordList)
             continue;
         }
         if (words.at(0).endsWith(":")){
-            qDebug() << words.at(0) ;
             QString text = words.at(0);
             text = text.chopped(1);
             ui->Microprogram_Memory->setItem(currentline, 2, new QTableWidgetItem(text));
             ui->Microprogram_Memory->item(currentline, 2)->setTextAlignment(Qt::AlignCenter);
-//            Labels[words.at(0).left(words.at(0).size() - 1)] = currentline;
             instruct = words.mid(1).join(", ");
         }
         else
@@ -545,7 +485,6 @@ void MainWindow::Fill_Micro_Table(QList<QStringList> wordList)
         content += br;
         content += addr;
         QString hx = binaryToHex(content);
-        qDebug() << content ;
 
         ui->Microprogram_Memory->setItem(currentline,4,new QTableWidgetItem(hx));
         ui->Microprogram_Memory->item(currentline, 4)->setTextAlignment(Qt::AlignCenter);
@@ -611,12 +550,7 @@ void MainWindow::on_MicroButton_clicked()
         wordList.append(lineWords);
     }
 
-//    wordList.removeAll([](const QStringList& list) {
-//        return list.isEmpty();
-//    });
-
     //Conditions
-
     int count_end = 0;
     foreach (const QStringList& words, wordList) {
         count_end += words.count("END");
@@ -669,11 +603,8 @@ QString binary16ToHex(const QString& binaryString) {
     if (hexString.length() < 4) {
         hexString = hexString.rightJustified(4, '0');
     }
-
     return hexString;
 }
-
-
 
 void MainWindow::Fill_Main_Table(QList<QStringList> wordList)
 {
@@ -700,13 +631,10 @@ void MainWindow::Fill_Main_Table(QList<QStringList> wordList)
 
         //labels
         if (words.at(0).endsWith(",")){
-            qDebug() << words.at(0) ;
             QString text = words.at(0);
             text = text.chopped(1);
             ui->Main_Memory->setItem(currentline,2,new QTableWidgetItem(text));
             ui->Main_Memory->item(currentline, 2)->setTextAlignment(Qt::AlignCenter);
-
-            //            Labels[words.at(0).left(words.at(0).size() - 1)] = currentline;
             instruct = words.mid(1).join(", ");
         }
         else
@@ -730,19 +658,15 @@ void MainWindow::Fill_Main_Table(QList<QStringList> wordList)
                 hexed = I+ words[i+1].rightJustified(3, QChar('0'));
                 ui->Main_Memory->setItem(currentline,4,new QTableWidgetItem("0x"+hexed.toUpper()));
                 ui->Main_Memory->item(currentline, 4)->setTextAlignment(Qt::AlignCenter);
-
                 b = 0;
                 break;
             }
             else if(words[i] == "DEC")
             {
-//                hexed = I + QString("%1").arg(words[i+1].toInt(), 3, 16, QChar('0'));
-
                 //check
                 hexed = binaryToHex(toBinary(words[i+1].toInt()));
                 ui->Main_Memory->setItem(currentline,4,new QTableWidgetItem("0x"+hexed.toUpper()));
                 ui->Main_Memory->item(currentline, 4)->setTextAlignment(Qt::AlignCenter);
-
                 b = 0;
                 break;
             }
@@ -758,7 +682,6 @@ void MainWindow::Fill_Main_Table(QList<QStringList> wordList)
             content = I + mic_lable + hexed + addr;
             ui->Main_Memory->setItem(currentline,4,new QTableWidgetItem("0x"+binary16ToHex(content).toUpper()));
             ui->Main_Memory->item(currentline, 4)->setTextAlignment(Qt::AlignCenter);
-
         }
         currentline ++;
     }
@@ -773,11 +696,9 @@ void MainWindow::on_MainButton_clicked()
     QString main_txt = ui->mainprogram->toPlainText();
     QStringList lines = main_txt.split("\n",Qt::SkipEmptyParts);
     QList<QStringList> wordList;
-    qDebug() << Labels ;
     var_labels.clear();
     bool endbool = true;
     foreach (QString line, lines) {
-//        line.remove(',');
         QStringList lineWords = line.split(" ", Qt::SkipEmptyParts);
         wordList.append(lineWords);
         if(lineWords[0].toUpper() == "HLT")
@@ -794,7 +715,6 @@ void MainWindow::on_MainButton_clicked()
         if(x[0].toUpper() == "HLT"){
             ui->Main_Memory->setItem(currentline,3,new QTableWidgetItem("HLT"));
             ui->Main_Memory->item(currentline, 3)->setTextAlignment(Qt::AlignCenter);
-
         }
         if(x[0].toUpper() == "ORG")
         {
@@ -805,7 +725,7 @@ void MainWindow::on_MainButton_clicked()
             continue;
         if(!x[0].endsWith(','))
             if(!Labels.contains(x[0])){
-                QMessageBox::critical(nullptr, "Error", QString("MicroProgram doesnt have %1").arg(x[0]));
+                QMessageBox::critical(nullptr, "Error", QString("MicroProgram doesn't have %1").arg(x[0]));
                 return;
             }
         if(x[0].endsWith(','))
@@ -818,17 +738,6 @@ void MainWindow::on_MainButton_clicked()
     ui->debug->setEnabled(1);
     Fill_Main_Table(wordList);
 }
-
-//QString hexToBinary(QString hexString) {
-//    bool ok;
-//    int intValue = hexString.toInt(&ok, 16);
-//    QString binaryString = QString::number(intValue, 2);
-//    int desiredLength = hexString.length() * 4;
-//    while (binaryString.length() < desiredLength) {
-//        binaryString = "0" + binaryString;
-//    }
-//    return binaryString;
-//}
 
 QString MainWindow::CARtoContent(QString CAR)
 {
@@ -922,5 +831,11 @@ void MainWindow::on_action_save_triggered()
         stream << ui->microprogram->toPlainText() + QString("\n~\n") + ui->mainprogram->toPlainText();
         file.close();
     }
+}
+
+
+void MainWindow::on_Exit_clicked()
+{
+    exit(0);
 }
 

@@ -12,7 +12,6 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    void set_regs();
     void run_micro(QString instruction);
 
     QString toBinary(QString Hex);          // 4 character hex returns 16 bits binary, 5 returns 20
@@ -50,6 +49,8 @@ private slots:
     void on_action_open_triggered();
 
     void on_action_save_triggered();
+
+    void on_Exit_clicked();
 
 private:
     Ui::MainWindow *ui;
