@@ -47,6 +47,10 @@ private slots:
 
     void on_debug_clicked();
 
+    void on_action_open_triggered();
+
+    void on_action_save_triggered();
+
 private:
     Ui::MainWindow *ui;
 };

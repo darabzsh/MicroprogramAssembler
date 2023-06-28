@@ -4,7 +4,8 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QColor>
-
+#include <QFile>
+#include <QFileDialog>
 QMap <QString, QString> F1,F2,F3,CD,BR;
 
 QString f1 = "-",
@@ -591,7 +592,6 @@ void MainWindow::on_MicroButton_clicked()
     ui->AR->setText("00000000000");
     ui->SBR->setText("00000000000");
     ui->E->setText("0");
-//    ui->E->setText("0");
 
     QString micro = ui->microprogram->toPlainText();
     QStringList lines = micro.split("\n",Qt::SkipEmptyParts);
@@ -619,11 +619,7 @@ void MainWindow::on_MicroButton_clicked()
     }
 
 
-//    qDebug() << wordList[0][1] ;
-
-
-
-    for(int i = 0 ; i< wordList.length();i++)
+   for(int i = 0 ; i< wordList.length();i++)
     {
         QStringList cf1 = {} , cf2= {} , cf3 = {};
         for(int j = 0 ; j< wordList[i].length();j++)
@@ -742,8 +738,6 @@ void MainWindow::Fill_Main_Table(QList<QStringList> wordList)
             {
                 addr = QString("%1").arg(var_labels[words[i]], 11, 2, QChar('0'));
             }
-
-
         }
         if(b)
         {
@@ -783,7 +777,6 @@ void MainWindow::on_MainButton_clicked()
     foreach (QStringList x, wordList) {
         if(x[0].toUpper() == "HLT"){
             ui->Main_Memory->setItem(currentline,3,new QTableWidgetItem("HLT"));
-//            ui->Main_Memory->setItem(currentline,4,new QTableWidgetItem("-"));
         }
         if(x[0].toUpper() == "ORG")
         {
@@ -821,19 +814,15 @@ void MainWindow::on_MainButton_clicked()
 
 QString MainWindow::CARtoContent(QString CAR)
 {
-//    qDebug() << "dasdasdad" ;
     int row = CAR.toInt(nullptr,2);
-//    qDebug() << hexToBinary(QString("0FF41")) ;
-
     QString content = toBinary(ui->Microprogram_Memory->item(row,4)->text());
-//    qDebug() << content ;
     return content;
 }
 
 
 void MainWindow::on_debug_clicked()
 {
-//    qDebug() << "\nasada1" ;
+
     reset_colors();
     for (int column = 0; column < ui->Microprogram_Memory->columnCount(); ++column)
     {
@@ -845,9 +834,7 @@ void MainWindow::on_debug_clicked()
         QMessageBox::warning(nullptr, "Finished", QString("The Program has reached the end... !"));
         return;
     }
-//    qDebug() << "asada2" ;
-//    qDebug() << ui->PC->text().toInt(nullptr,2) ;
-//    qDebug() << ui->Main_Memory->item(ui->PC->text().toInt(nullptr,2),2) ;
+
     bool isPresent = true;
     int a = ui->PC->text().toInt(nullptr,2)-1;
     QList<int> valuesList = var_labels.values();
@@ -867,6 +854,53 @@ void MainWindow::on_Compile_clicked()
 {
     while (ui->Main_Memory->item(ui->PC->text().toInt(nullptr,2),3)->text() != "HLT") {
         on_debug_clicked();
+    }
+}
+
+
+void MainWindow::on_action_open_triggered()
+{
+    QFileDialog dialog(nullptr, "Select Text File");
+
+    dialog.setFileMode(QFileDialog::ExistingFile);
+    dialog.setNameFilter("Text files (*.txt)");
+
+    // Show the file dialog
+    if (dialog.exec()) {
+        QStringList selectedFiles = dialog.selectedFiles();
+        QString filePath = selectedFiles.at(0);
+        QFile file(filePath);
+
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QTextStream in(&file);
+            QString fileContent = in.readAll();
+            file.close();
+
+            if (!fileContent.contains('~')){
+                QMessageBox::critical(nullptr, "Error", "The text file is not in a proper format.");
+            }
+            else{
+
+                QStringList content = fileContent.split("\n~\n");
+                ui->microprogram->setText(content[0]);
+                ui->mainprogram->setText(content[1]);
+            }
+        }
+        else {
+            QMessageBox::critical(nullptr, "Error", "Failed to open the file.");
+        }
+    }
+}
+
+void MainWindow::on_action_save_triggered()
+{
+    QString filePath = QFileDialog::getSaveFileName(nullptr, "Save File", ".txt", "Text Files (*.txt)");
+
+    QFile file(filePath);
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QTextStream stream(&file);
+        stream << ui->microprogram->toPlainText() + QString("\n~\n") + ui->mainprogram->toPlainText();
+        file.close();
     }
 }
 
