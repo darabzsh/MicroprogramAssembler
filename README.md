@@ -19,4 +19,4 @@ To use this simulator, follow these steps:
 2. Navigate to the directory that contains the executable file: `cd MicroprogramAssembler/exe`
 3. Run the simulator: `./Assembler.exe`
 ---
-![Rec-0016](https://github.com/darabzsh/MicroprogramAssembler/assets/93267772/7794390f-eb21-4fec-8382-527b6be5662d)
+![Rec-0016 (1)](https://github.com/darabzsh/MicroprogramAssembler/assets/93267772/d16c1b8f-26d1-4650-a908-6f1e5e8aaa53)
